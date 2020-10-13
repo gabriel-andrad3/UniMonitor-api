@@ -8,7 +8,7 @@ router.get('/', async function(req, res, next) {
         res.send(await roleService.getRoles());
     }
     catch (error) {
-        res.send(error);
+        next(error);
     }
 });
 

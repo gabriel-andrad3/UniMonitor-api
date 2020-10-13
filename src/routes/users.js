@@ -8,7 +8,7 @@ router.get('/', async function(req, res, next) {
     res.send(await userService.getUsers());
   }
   catch (error) {
-    res.send(error);
+    next(error);
   }
 });
 
@@ -17,7 +17,7 @@ router.get('/:id', async function(req, res, next) {
     res.send(await userService.getUser(req.params.id));
   }
   catch (error) {
-    res.send(error);
+    next(error);
   }
 });
 
