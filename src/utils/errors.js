@@ -11,6 +11,9 @@ class GeneralError extends Error {
         if (this instanceof NotFound) {
             return 404;
         }
+        if (this instanceof Conflict) {
+            return 409;
+        }
 
         return 500;
     }
@@ -18,9 +21,11 @@ class GeneralError extends Error {
 
 class BadRequest extends GeneralError { }
 class NotFound extends GeneralError { }
+class Conflict extends GeneralError { }
 
 module.exports = {
     GeneralError,
     BadRequest,
-    NotFound
+    NotFound,
+    Conflict
 }
