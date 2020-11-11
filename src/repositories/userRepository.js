@@ -33,7 +33,7 @@ async function getUserByRegister(register) {
     let query = `${selectQuery} where u.register = '${register}'`;
 
     let result = await pool.query(query);
-    
+
     return resultToUser(result);
 }
 

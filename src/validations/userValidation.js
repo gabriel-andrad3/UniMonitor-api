@@ -30,7 +30,7 @@ function validateRoles(roles) {
     }
 
     roles.forEach(role => {
-        if (typeof(role.id) != "number") {
+        if (typeof(role.id) !== "number") {
             throw new BadRequest("role id must be a number");
         }
     });

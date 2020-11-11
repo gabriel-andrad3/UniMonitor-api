@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<head>
+    <script src="scripts/subjects.js"></script>
+</head>
+<body> 
+    <label for="subjects">Selecione uma disciplina: </label>
+    <select name="subjects" id="subjects" onchange="changeSubject();">
+    
+    </select><br/>
+
+    <label for="id">Id: </label>
+    <input name="id" id="id" readonly/><br/>
+
+    <label for="name">Nome: </label>
+    <input name="name" id="name" /><br/>
+
+    <label for="workload">Carga Horária: </label>
+    <input name="workload" type="number" id="workload" /><br/>
+
+    <label for="professor">Professor: </label>
+    <select name="professor" id="professor">
+
+    </select>
+    <br/>
+
+    <button onclick="createSubject();">Criar</button>
+    <button onclick="updateSubject();">Atualizar</button>
+    <button onclick="deleteSubject();">Excluir</button>
+
+    <script>
+        getSubjects(changeSubject);
+    </script>
+</body>
