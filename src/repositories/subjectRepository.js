@@ -7,7 +7,7 @@ const selectQuery = `select
                         s.workload as subject_workload,
                         s.professor_id as subject_professor_id
                     from
-                        subject s`
+                        subject s`;
 
 async function getSubjects() {
     let result = await pool.query(selectQuery);

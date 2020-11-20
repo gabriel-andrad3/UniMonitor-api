@@ -1,7 +1,7 @@
 const { Subject } = require('../models');
 const subjectRepository = require('../repositories/subjectRepository');
 const userRepository = require('../repositories/userRepository');
-const { NotFound } = require('../utils/errors');
+const { NotFound, Conflict } = require('../utils/errors');
 
 async function getSubjects() {
     let subjects = await subjectRepository.getSubjects();
@@ -16,16 +16,16 @@ async function getSubjects() {
 }
 
 async function createSubject(name, workload, professor) {
-    let existentUser = await userRepository.getUserById(professor.id);
+    let existentUser = await userRepository.getUserById(professor.id); 
 
     if (!existentUser) {
-        throw new Conflict(`user with id ${role.id} does not exist`);
+        throw new Conflict(`user with id ${professor.id} does not exist`);
     }
 
     let professorRole = existentUser.roles.find(role => role.name === 'Professor');
 
     if (!professorRole) {
-        throw new Conflict(`user with id ${role.id} must be a professor`);
+        throw new Conflict(`user with id ${professor.id} must be a professor`); 
     }
 
     return await subjectRepository.insertSubject(new Subject(name, workload, existentUser));

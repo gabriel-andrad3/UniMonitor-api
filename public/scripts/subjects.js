@@ -23,7 +23,7 @@ function setSubject(index) {
 function changeSubject() {
     let subjects = document.getElementById('subjects');
 
-    setSubject([subjects.selectedIndex]);
+    setSubject(subjects.selectedIndex);
 }
 
 function getSubjects(callback) {
@@ -50,7 +50,7 @@ function getSubjects(callback) {
                 response.json()
                 .then(json => {
                     let subjects = document.getElementById('subjects');
-                    subjects.innerHTML = '';
+                    subjects.innerHTML = '';                
 
                     json.forEach(subject => {
                         let subjectOption = document.createElement('option');

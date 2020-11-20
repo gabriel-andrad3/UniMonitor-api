@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { validateName, validateWorkload, validateProfessor } = require('../validations/subjectValidation');
-
 const subjectService = require('../services/subjectService');
 
 router.get('/', async function(req, res, next) {
