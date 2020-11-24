@@ -1,33 +1,68 @@
 <!DOCTYPE html>
 <head>
-    <script src="scripts/subjects.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+    <script src="https://kit.fontawesome.com/4104f3f9e1.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="scripts/api.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/pages/subjects.js"></script>
+    <link rel="stylesheet" href="stylesheets/style.css">
 </head>
-<body> 
-    <label for="subjects">Selecione uma disciplina: </label>
-    <select name="subjects" id="subjects" onchange="changeSubject();">
-    
-    </select><br/>
+<body onload="getSubjects();">
+    <div class="menu">
+        <a href="/subjects.html"><h1>DISCIPLINAS</h1></a>
+    </div>
+    <div class="content">
+        <div class="title">
+            <h1>DISCIPLINAS</h1>
+            <button id="create" class="create" onclick="showCreateSubjectModal();"><i class="fas fa-plus button-icon"></i><b>NOVA</b></button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NOME</th>
+                    <th>PROFESSOR</th>
+                    <th>CARGA HORÁRIA</th>
+                    <th>AÇÕES</th>
+                </tr>
+            </thead>
+            <tbody id="subjects" />
+        </table>
+        <div id="status" class="status">
+        </div>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <h1 id="modal-action"></h1>
+                <form id="form" action="JavaScript:saveSubject();">
+                    <div class="container">
+                        <label for="name">Id:</label>
+                        <input type="text" id="id" name="id" disabled/>
+                    </div>
 
-    <label for="id">Id: </label>
-    <input name="id" id="id" readonly/><br/>
+                    <div class="container">
+                        <label for="name">Nome:</label>
+                        <input type="text" id="name" name="name" />
+                    </div>
 
-    <label for="name">Nome: </label>
-    <input name="name" id="name" /><br/>
+                    <div class="container">
+                        <label for="professor">Professor:</label>
+                        <select id="professor" name="professor"></select>
+                    </div>
 
-    <label for="workload">Carga Horária: </label>
-    <input name="workload" type="number" id="workload" /><br/>
+                    <div class="container">
+                        <label for="workload">Carga Horária:</label>
+                        <input type="number" min="1" id="workload" name="workload" />
+                    </div>
 
-    <label for="professor">Professor: </label>
-    <select name="professor" id="professor">
-
-    </select>
-    <br/>
-
-    <button onclick="createSubject();">Criar</button>
-    <button onclick="updateSubject();">Atualizar</button>
-    <button onclick="deleteSubject();">Excluir</button>
-
-    <script>
-        getSubjects(changeSubject);
-    </script>
+                    <div class="container">
+                        <button id="save" type="submit" class="save"><i class="fas fa-save button-icon"></i>Salvar</button>
+                        <button id="cancel" type="reset" class="cancel" onclick="hideModal();"><i class="fas fa-times button-icon"></i>Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
