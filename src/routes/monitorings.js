@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-//validation
 const monitoringService = require('../services/monitoringService');
 const { validateSubject, validateMonitor } = require('../validations/monitoringValidation');
 

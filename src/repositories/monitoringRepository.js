@@ -1,6 +1,5 @@
 const pool = require("../../config/database");
-const { Subject, User } = require("../models");
-const Monitoring = require("../models/Monitoring");
+const { Subject, User, Monitoring } = require("../models");
 
 const selectQuery = `select 
                         m.id as monitoring_id, 

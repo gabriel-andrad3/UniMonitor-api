@@ -1,6 +1,5 @@
 const pool = require('../../config/database');
-const Role = require('../models/Role');
-const User = require('../models/User');
+const { Role, User } = require('../models');
 
 const selectQuery = `select 
                         u.id as user_id, 
