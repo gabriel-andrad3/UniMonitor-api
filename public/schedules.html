@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Horarios - UniMonitor</title>
+        <script src="scripts/schedules.js"></script>
+    </head>
+    <body> 
+        <label for="schedules">Selecione um horario: </label>
+        <select name="schedules" id="schedules" onchange="changeSchedule();">
+        
+        </select><br/>
+
+        <label for="id">Id: </label>
+        <input name="id" id="id" readonly/><br/>
+
+        <label for="weekday">Dias da semana: </label>
+        <input name="weekday" id="weekday" /><br/>
+
+        <label for="begin">Inicio: </label>
+        <input name="begin" type="time" id="begin" /><br/>
+
+        <label for="end">Fim: </label>
+        <input name="end" type="time" id="end" /><br/>
+
+        <label for="monitoring">Monitoria: </label>
+        <select name="monitoring" id="monitoring">
+
+        </select>
+        <br/>
+
+        <button onclick="createSubject();">Cadastrar</button>
+        <button onclick="updateSubject();">Editar</button>
+        <button onclick="deleteSubject();">Excluir</button>
+
+        <script>
+            getSubjects(changeSchedule);
+        </script>
+    </body>
+</html>

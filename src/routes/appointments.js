@@ -14,8 +14,8 @@ router.get('/', async function(req, res, next) {
 router.post('/', async function(req, res, next) {
     try {
         // validate begin end
-        validateStudent(req.body.student);
-        validateSchedule(req.body.schedule);
+        //validateStudent(req.body.student);
+        //validateSchedule(req.body.schedule);
         
         res.send(await appointmentService.insertAppointment(req.body.begin, req.body.end, req.body.student, req.body.schedule));
     }
@@ -27,8 +27,8 @@ router.post('/', async function(req, res, next) {
 router.put('/:id', async function(req, res, next) {
     try {
         // validate begin end
-        validateStudent(req.body.student);
-        validateSchedule(req.body.schedule);
+        //validateStudent(req.body.student);
+        //validateSchedule(req.body.schedule);
         
         res.send(await appointmentService.updateAppointment(req.body.begin, req.body.end, req.body.student, req.body.schedule, req.params.id));
     }

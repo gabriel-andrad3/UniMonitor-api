@@ -11,6 +11,8 @@ async function getAppointments() {
         if (appointment.schedule.id) {
             appointment.schedule = await scheduleRepository.getScheduleById(appointment.schedule.id);
             appointment.schedule.monitoring = await monitoringRepository.getMonitoringById(appointment.schedule.monitoring.id);
+            appointment.schedule.monitoring.subject = await subjectRepository.getSubjectById(appointment.schedule.monitoring.subject.id);
+            appointment.schedule.monitoring.monitor = await userRepository.getUserById(appointment.schedule.monitoring.monitor.id);
         }
     }
 
@@ -25,6 +27,9 @@ async function insertAppointment(begin, end, student, schedule) {
     }
 
     let existentSchedule = await scheduleRepository.getScheduleById(schedule.id);
+    let monitoring = await monitoringRepository.getMonitoringById(existentSchedule.monitoring.id);
+    existentSchedule.monitoring.subject = await subjectRepository.getSubjectById(monitoring.subject.id);
+    existentSchedule.monitoring.monitor = await userRepository.getUserById(monitoring.monitor.id);
 
     if (!existentSchedule) {
         throw new NotFound(`horário com id ${schedule.id} não existe`);
@@ -47,6 +52,9 @@ async function updateAppointment(begin, end, student, schedule, id) {
     }
 
     let existentSchedule = await scheduleRepository.getScheduleById(schedule.id);
+    let monitoring = await monitoringRepository.getMonitoringById(existentSchedule.monitoring.id);
+    existentSchedule.monitoring.subject = await subjectRepository.getSubjectById(monitoring.subject.id);
+    existentSchedule.monitoring.monitor = await userRepository.getUserById(monitoring.monitor.id);
 
     if (!existentSchedule) {
         throw new NotFound(`horário com id ${schedule.id} não existe`);

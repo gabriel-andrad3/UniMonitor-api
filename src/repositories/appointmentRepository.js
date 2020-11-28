@@ -1,5 +1,5 @@
 const pool = require('../../config/database');
-const { Appointment, User, Schedule } = require('../models'); // TODO: Schedule - { Appointment, Schedule }
+const { Appointment, User, Schedule } = require('../models'); 
 
 const selectQuery = `select 
                         a.id as appointment_id,
@@ -18,7 +18,7 @@ async function getAppointments() {
 
     return result.rows.map(row => {
         let student = new User(null, null, null, row.appointment_student_id);
-        let schedule = new Schedule(null, null, null, row.appointment_schedule_id);
+        let schedule = new Schedule(null, null, null, null, row.appointment_schedule_id);
 
         return new Appointment(row.appointment_begin, row.appointment_end, student, schedule, row.appointment_id);
     })
@@ -35,14 +35,14 @@ async function getAppointmentById(id) {
     let student = new User(null, null, null, result.rows[0].appointment_student_id);
     let schedule = new Schedule(null, null, null, result.rows[0].appointment_schedule_id);
 
-    return new Appointment(result.rows[0].appointment_begin, result.rows[0].appointment_end, student, null, result.rows[0].appointment_id); // TODO: Schedule - return new Appointment(result.rows[0].appointment_begin.trim(), result.rows[0].appointment_end.trim(), student, schedule, result.rows[0].appointment_id);
+    return new Appointment(result.rows[0].appointment_begin, result.rows[0].appointment_end, student, schedule, result.rows[0].appointment_id);
 }
 
 async function insertAppointment(appointment) {
     const insertQuery = `insert into appointment 
                             ("begin", "end", student_id, schedule_id) 
                         values 
-                            (${appointment.begin}, ${appointment.end}, ${appointment.student.id}, ${appointment.schedule.id})
+                            ('${appointment.begin}', '${appointment.end}', ${appointment.student.id}, ${appointment.schedule.id})
                         returning id`;
 
     let result = await pool.query(insertQuery);
@@ -54,8 +54,8 @@ async function insertAppointment(appointment) {
 
 async function updateAppointment(appointment) {
     const updateQuery = `update appointment set 
-                            "begin"=${appointment.begin},
-                            "end"=${appointment.end},
+                            "begin"='${appointment.begin}',
+                            "end"='${appointment.end}',
                             student_id=${appointment.student.id}, 
                             schedule_id=${appointment.schedule.id} 
                         where 
