@@ -1,5 +1,4 @@
-const userRepository = require('../repositories/userRepository');
-const roleRepository = require('../repositories/roleRepository');
+const { roleRepository, userRepository } = require('../repositories');
 const { NotFound, Conflict } = require('../utils/errors');
 const User = require('../models/User');
 
@@ -11,7 +10,7 @@ async function getUser(id) {
     let user = await userRepository.getUserById(id);
 
     if (!user)
-        throw new NotFound(`user with id ${id} not found`);
+        throw new NotFound(`usuário com id ${id} não existe`);
 
     return user;
 }
@@ -20,7 +19,7 @@ async function createUser(name, register, roles) {
     let user = await userRepository.getUserByRegister(register);
 
     if (user)
-        throw new Conflict(`user with register ${register} already exists`);
+        throw new Conflict(`usuário com registro ${register} já existe`);
 
     let existentRoles = await roleRepository.getRoles();
 
@@ -28,7 +27,7 @@ async function createUser(name, register, roles) {
         let existentRole = existentRoles.find(x => x.id === role.id)
 
         if (!existentRole)
-            throw new Conflict(`role with id ${role.id} does not exist`);
+            throw new Conflict(`função com id ${role.id} não existe`);
 
         role.name = existentRole.name;
     });

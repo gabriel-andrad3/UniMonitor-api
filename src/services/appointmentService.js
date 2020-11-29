@@ -1,5 +1,6 @@
 const Appointment = require('../models/Appointment');
-const { userRepository, subjectRepository, monitoringRepository, appointmentRepository, scheduleRepository } = require('../repositories');
+const { userRepository, subjectRepository, monitoringRepository, 
+        appointmentRepository, scheduleRepository } = require('../repositories');
 
 async function getAppointments() {
     let appointments = await appointmentRepository.getAppointments();
@@ -67,7 +68,7 @@ async function deleteAppointment(id) {
     let existentAppointment = await appointmentRepository.getAppointmentById(id);
     
     if (!existentAppointment) {
-        throw new NotFound(`appointment with id ${id} does not exist`);
+        throw new NotFound(`agendamento com id ${id} não existe`);
     }
     
     await appointmentRepository.deleteAppointment(id);

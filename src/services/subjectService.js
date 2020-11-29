@@ -1,6 +1,5 @@
 const { Subject } = require('../models');
-const subjectRepository = require('../repositories/subjectRepository');
-const userRepository = require('../repositories/userRepository');
+const { subjectRepository, userRepository } = require('../repositories');
 const { NotFound, Conflict } = require('../utils/errors');
 
 async function getSubjects() {
@@ -19,13 +18,13 @@ async function createSubject(name, workload, professor) {
     let existentUser = await userRepository.getUserById(professor.id); 
 
     if (!existentUser) {
-        throw new Conflict(`user with id ${professor.id} does not exist`);
+        throw new Conflict(`usuário com id ${professor.id} não existe`);
     }
 
     let professorRole = existentUser.roles.find(role => role.name === 'Professor');
 
     if (!professorRole) {
-        throw new Conflict(`user with id ${professor.id} must be a professor`); 
+        throw new Conflict(`usuário com id ${professor.id} deve ser um professor`); 
     }
 
     return await subjectRepository.insertSubject(new Subject(name, workload, existentUser));
@@ -35,19 +34,19 @@ async function updateSubject(id, name, workload, professor) {
     let existentSubject = await subjectRepository.getSubjectById(id);
 
     if (!existentSubject) {
-        throw new NotFound(`subject with id ${id} does not exist`);
+        throw new NotFound(`disciplina com id ${id} não existe`);
     }
 
     let existentUser = await userRepository.getUserById(professor.id);
 
     if (!existentUser) {
-        throw new Conflict(`user with id ${role.id} does not exist`);
+        throw new Conflict(`usuário com id ${role.id} não existe`);
     }
 
     let professorRole = existentUser.roles.find(role => role.name === 'Professor');
 
     if (!professorRole) {
-        throw new Conflict(`user with id ${role.id} must be a professor`);
+        throw new Conflict(`usuário com id ${role.id} deve ser um professor`);
     }
     
     return await subjectRepository.updateSubject(new Subject(name, workload, existentUser, id));
@@ -57,7 +56,7 @@ async function deleteSubject(id) {
     let existentSubject = await subjectRepository.getSubjectById(id);
 
     if (!existentSubject) {
-        throw new NotFound(`subject with id ${id} does not exist`);
+        throw new NotFound(`disciplina com id ${id} não existe`);
     }
 
     await subjectRepository.deleteSubject(existentSubject);

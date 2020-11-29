@@ -1,7 +1,5 @@
 const Monitoring = require('../models/Monitoring');
-const monitoringRepository = require('../repositories/monitoringRepository');
-const subjectRepository = require('../repositories/subjectRepository');
-const userRepository = require('../repositories/userRepository');
+const { monitoringRepository, subjectRepository, userRepository } = require('../repositories');
 const { Conflict, NotFound } = require('../utils/errors');
 
 async function getMonitorings() {
@@ -25,19 +23,19 @@ async function insertMonitoring(subject, monitor) {
     existentSubject.professor = await userRepository.getUserById(existentSubject.professor.id);
 
     if (!existentSubject) {
-        throw new NotFound(`subject with id ${subject.id} does not exist`);
+        throw new NotFound(`disciplina com id ${subject.id} não existe`);
     }
 
     let existentMonitor = await userRepository.getUserById(monitor.id); 
 
     if (!existentMonitor) {
-        throw new NotFound(`monitor with id ${monitor.id} does not exist`);
+        throw new NotFound(`monitor com id ${monitor.id} não existe`);
     }
 
     let monitorRole = existentMonitor.roles.find(role => role.name === "Monitor");
 
     if (!monitorRole) {
-        throw new Conflict(`user with id ${monitor.id} must be a monitor`);
+        throw new Conflict(`usuário com id ${monitor.id} deve ser um monitor`);
     }
     
     return await monitoringRepository.insertMonitoring(new Monitoring(existentSubject, existentMonitor));
@@ -47,26 +45,26 @@ async function updateMonitoring(subject, monitor, id) {
     let existentMonitoring = await monitoringRepository.getMonitoringById(id);
 
     if (!existentMonitoring) {
-        throw new NotFound(`monitoring with id ${id} does not exist`);
+        throw new NotFound(`monitoria com id ${id} não existe`);
     }
 
     let existentSubject = await subjectRepository.getSubjectById(subject.id); 
     existentSubject.professor = await userRepository.getUserById(existentSubject.professor.id);
 
     if (!existentSubject) {
-        throw new NotFound(`subject with id ${subject.id} does not exist`);
+        throw new NotFound(`disciplina com id ${subject.id} não existe`);
     }
 
     let existentMonitor = await userRepository.getUserById(monitor.id); 
 
     if (!existentMonitor) {
-        throw new NotFound(`monitor with id ${monitor.id} does not exist`);
+        throw new NotFound(`monitor com id ${monitor.id} não existe`);
     }
 
     let monitorRole = existentMonitor.roles.find(role => role.name === "Monitor");
 
     if (!monitorRole) {
-        throw new Conflict(`user with id ${monitor.id} must be a monitor`);
+        throw new Conflict(`usuário com id ${monitor.id} deve ser um monitor`);
     }
     
     return await monitoringRepository.updateMonitoring(new Monitoring(existentSubject, existentMonitor, id));
@@ -76,7 +74,7 @@ async function deleteMonitoring(id) {
     let existentMonitoring = await monitoringRepository.getMonitoringById(id);
     
     if (!existentMonitoring) {
-        throw new NotFound(`monitoring with id ${id} does not exist`);
+        throw new NotFound(`monitoria com id ${id} não existe`);
     }
     
     await monitoringRepository.deleteMonitoring(id);

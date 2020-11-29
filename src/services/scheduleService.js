@@ -1,8 +1,5 @@
 const Schedule = require('../models/Schedule');
-const scheduleRepository = require('../repositories/scheduleRepository');
-const monitoringRepository = require('../repositories/monitoringRepository');
-const subjectRepository = require('../repositories/subjectRepository');
-const userRepository = require('../repositories/userRepository');
+const { scheduleRepository, monitoringRepository, subjectRepository, userRepository } = require('../repositories');
 const { NotFound, Conflict } = require('../utils/errors');
 
 async function getSchedules() {
@@ -24,7 +21,7 @@ async function createSchedule(weekday, begin, end, monitoring) {
     let existentMonitoring = await monitoringRepository.getMonitoringById(monitoring.id); 
 
     if (!existentMonitoring) {
-        throw new Conflict(`monitoring with id ${monitoring.id} does not exist`);
+        throw new Conflict(`monitoria com id ${monitoring.id} não existe`);
     }
 
     return await scheduleRepository.insertSchedule(new Schedule(weekday, begin, end, existentMonitoring));
@@ -34,13 +31,13 @@ async function updateSchedule(id, weekday, begin, end, monitoring) {
     let existentSchedule = await scheduleRepository.getScheduleById(id);
 
     if (!existentSchedule) {
-        throw new NotFound(`schedule with id ${id} does not exist`);
+        throw new NotFound(`horário com id ${id} não existe`);
     }
 
     let existentMonitoring = await monitoringRepository.getMonitoringById(monitoring.id); 
 
     if (!existentMonitoring) {
-        throw new Conflict(`monitoring with id ${monitoring.id} does not exist`);
+        throw new Conflict(`monitoria com id ${monitoring.id} não existe`);
     }
     
     return await scheduleRepository.updateSchedule(new Schedule(weekday, begin, end, existentMonitoring, id));
@@ -50,7 +47,7 @@ async function deleteSchedule(id) {
     let existentSchedule = await scheduleRepository.getScheduleById(id);
 
     if (!existentSchedule) {
-        throw new NotFound(`schedule with id ${id} does not exist`);
+        throw new NotFound(`horário com id ${id} não existe`);
     }
 
     await scheduleRepository.deleteSchedule(existentSchedule);
