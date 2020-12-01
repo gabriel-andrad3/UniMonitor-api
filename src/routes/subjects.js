@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { validateName, validateWorkload, validateProfessor } = require('../validations/subjectValidation');
 const subjectService = require('../services/subjectService');
+const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
-router.get('/', async function(req, res, next) {
+router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
     try {
         res.send(await subjectService.getSubjects());
     }
@@ -12,7 +13,7 @@ router.get('/', async function(req, res, next) {
     }
 });
 
-router.post('/', async function(req, res, next) {
+router.post('/', handleRoleAuthorization(['Professor', 'Admin']), async function(req, res, next) {
     try {
       validateName(req.body.name);
       validateWorkload(req.body.workload);
@@ -25,7 +26,7 @@ router.post('/', async function(req, res, next) {
     }
 });
 
-router.put('/:id', async function(req, res, next) {
+router.put('/:id', handleRoleAuthorization(['Professor', 'Admin']), async function(req, res, next) {
   try {
     validateName(req.body.name);
     validateWorkload(req.body.workload);
@@ -38,7 +39,7 @@ router.put('/:id', async function(req, res, next) {
   }
 });
 
-router.delete('/:id', async function(req, res, next) {
+router.delete('/:id', handleRoleAuthorization(['Professor', 'Admin']), async function(req, res, next) {
   try {
     res.send(await subjectService.deleteSubject(req.params.id));
   }

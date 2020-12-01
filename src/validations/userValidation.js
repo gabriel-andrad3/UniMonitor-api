@@ -20,24 +20,20 @@ function validateRegister(register) {
     }
 }
 
-function validateRoles(roles) {
-    if (!roles instanceof Array) {
-        throw new BadRequest("roles must be an Array");
+function validatePassword(password) {
+    if (typeof(password) !== "string") {
+        throw new BadRequest("register must be a string");
     }
 
-    if (roles.length === 0) {
-        throw new BadRequest("roles must not be empty");
-    }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
 
-    roles.forEach(role => {
-        if (typeof(role.id) !== "number") {
-            throw new BadRequest("role id must be a number");
-        }
-    });
+    if (!passwordRegex.test(password)) {
+        throw new BadRequest("a senha deve possuir entre 8 e 16 caracteres, um número, uma letra minúscula, uma letra maiúscula e um caracter especial");
+    }
 }
 
 module.exports = {
     validateName,
     validateRegister,
-    validateRoles
+    validatePassword
 }

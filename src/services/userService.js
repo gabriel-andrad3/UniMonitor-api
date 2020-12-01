@@ -1,5 +1,7 @@
+const bcrypt = require('bcrypt');
 const { roleRepository, userRepository } = require('../repositories');
 const { NotFound, Conflict } = require('../utils/errors');
+const config = require('../../config/authorization');
 const User = require('../models/User');
 
 async function getUsers() {
@@ -15,24 +17,18 @@ async function getUser(id) {
     return user;
 }
 
-async function createUser(name, register, roles) {
+async function createUser(name, register, password) {
     let user = await userRepository.getUserByRegister(register);
 
     if (user)
         throw new Conflict(`usuário com registro ${register} já existe`);
 
     let existentRoles = await roleRepository.getRoles();
+    let studentRole = existentRoles.find(x => x.name === 'Student');
 
-    roles.forEach(role => {
-        let existentRole = existentRoles.find(x => x.id === role.id)
-
-        if (!existentRole)
-            throw new Conflict(`função com id ${role.id} não existe`);
-
-        role.name = existentRole.name;
-    });
+    let passwordHash = await bcrypt.hash(password, config.hashSaltRounds);
     
-    return await userRepository.insertUser(new User(name, register, roles));
+    return await userRepository.insertUser(new User(name, register, [studentRole]), passwordHash);
 }
 
 module.exports = {

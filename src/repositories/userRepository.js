@@ -1,3 +1,4 @@
+const { PayloadTooLarge } = require('http-errors');
 const pool = require('../../config/database');
 const { Role, User } = require('../models');
 
@@ -36,14 +37,36 @@ async function getUserByRegister(register) {
     return resultToUser(result);
 }
 
-async function insertUser(user) {
+async function getUserAndPasswordByRegister(register) {
+   const query = `select 
+                    u.id as user_id, 
+                    u."name" as user_name, 
+                    u.register as user_register, 
+                    u.password as user_password,
+                    r.id as role_id, 
+                    r."name" as role_name 
+                from 
+                    "user" u
+                inner join user_role ur
+                    on u.id = ur.user_id 
+                inner join "role" r 
+                    on ur.role_id = r.id`;
+    
+    let result = await pool.query(query);
+
+    const user = resultToUser(result);
+
+    return { user: user, passwordHash: result.rows[0].user_password };
+}
+
+async function insertUser(user, password) {
     try {
         await pool.query('begin');
         
         const userQuery = `insert into "user" 
-                                ("name", register) 
+                                ("name", register, password) 
                             values 
-                                ('${user.name}', '${user.register}') 
+                                ('${user.name}', '${user.register}', '${password}') 
                             returning id`;
 
         let userResult = await pool.query(userQuery);
@@ -95,5 +118,6 @@ module.exports = {
     getUsers,
     getUserById,
     getUserByRegister,
+    getUserAndPasswordByRegister,
     insertUser
 }
