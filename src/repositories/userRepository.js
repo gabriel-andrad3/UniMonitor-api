@@ -87,6 +87,27 @@ async function insertUser(user, password) {
     }
 }
 
+async function updateUser(user) {
+    try {
+        await pool.query('begin');
+        
+        const deleteRolesQuery = `delete from user_role where user_id = ${user.id}`;
+        await pool.query(deleteRolesQuery);
+
+        const insertRolesQuery = `insert into user_role (role_id, user_id) values ${user.roles.map(role => `(${role.id}, ${user.id})`).join(', ')}`;
+        await pool.query(insertRolesQuery);
+
+        pool.query('commit');
+
+        return user;
+    }
+    catch (e) {
+        pool.query('rollback');
+
+        throw e;
+    }
+}
+
 function resultToUser(result) {
     let users = resultToUsers(result);
 
@@ -119,5 +140,6 @@ module.exports = {
     getUserById,
     getUserByRegister,
     getUserAndPasswordByRegister,
-    insertUser
+    insertUser,
+    updateUser
 }

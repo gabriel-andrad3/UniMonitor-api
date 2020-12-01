@@ -2,8 +2,6 @@ let subjects = [];
 let professors = [];
 
 async function getSubjects() {
-    console.log("Entrou");
-
     let table = document.getElementById('subjects');
 
     subjects = await api.subjects.get();

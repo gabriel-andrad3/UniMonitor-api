@@ -32,8 +32,25 @@ function validatePassword(password) {
     }
 }
 
+function validateRoles(roles) {
+    if (!roles instanceof Array) {
+        throw new BadRequest("roles must be an Array");
+    }
+
+    if (roles.length === 0) {
+        throw new BadRequest("roles must not be empty");
+    }
+
+    roles.forEach(role => {
+        if (typeof(role.id) !== "number") {
+            throw new BadRequest("role id must be a number");
+        }
+    });
+}
+
 module.exports = {
     validateName,
     validateRegister,
-    validatePassword
+    validatePassword,
+    validateRoles
 }

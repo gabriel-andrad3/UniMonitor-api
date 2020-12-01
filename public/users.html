@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+    <script src="https://kit.fontawesome.com/4104f3f9e1.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="scripts/api.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/pages/commons.js"></script>
+    <script src="scripts/pages/users.js"></script>
+    <link rel="stylesheet" href="stylesheets/style.css">
+
+    <title>Usuários - UniMonitor</title>
+</head>
+<body onload="getUsers();">
+    <div class="menu">
+        <a href="/subjects.html"><h1>DISCIPLINAS</h1></a>
+        <a href="/monitorings.html"><h1>MONITORIAS</h1></a>
+        <a href="/users.html"><h1>USUÁRIOS</h1></a>
+    </div>
+    <div class="content">
+        <div class="title">
+            <h1>USUÁRIOS</h1>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>REGISTRO</th>
+                    <th>NOME</th>
+                    <th>FUNÇÕES</th>
+                    <th>AÇÕES</th>
+                </tr>
+            </thead>
+            <tbody id="users" />
+        </table>
+        <div id="status" class="status">
+        </div>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <h1 id="modal-action"></h1>
+                <form id="form" action="JavaScript:saveUser();">
+                    <div class="container">
+                        <label for="name">Id:</label>
+                        <input type="text" id="id" name="id" disabled/>
+                    </div>
+
+                    <div class="container">
+                        <label for="register">Registro:</label>
+                        <input type="text" id="register" name="register" disabled/>
+                    </div>
+
+                    <div class="container">
+                        <label for="name">Nome:</label>
+                        <input type="text" id="name" name="name" />
+                    </div>
+
+                    <div id="roles">
+                        Funções:
+                        <br />
+                        <br />
+                    </div>
+
+                    <div class="container">
+                        <button id="save" type="submit" class="save"><i class="fas fa-save button-icon"></i>Salvar</button>
+                        <button id="cancel" type="reset" class="cancel" onclick="hideModal();"><i class="fas fa-times button-icon"></i>Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>

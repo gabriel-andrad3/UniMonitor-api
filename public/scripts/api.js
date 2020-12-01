@@ -6,6 +6,18 @@ const _client = axios.create({
 })
 
 const api = {
+    roles: {
+        get: async function () {
+            try {
+                const response = await _client.get('/roles');
+        
+                return response.data;
+            }
+            catch (error) {
+                resolveError(resolveError);
+            }
+        }
+    },
     users: {
         get: async function () {
             try {
@@ -16,7 +28,17 @@ const api = {
             catch (error) {
                 resolveError(resolveError);
             }
-        }
+        },
+        put: async function (id, user) {
+            try {
+                const response = await _client.put(`/users/${id}`, user);
+
+                return response.data;
+            }
+            catch (error) {
+                resolveError(error);
+            }
+        },
     },
     subjects: {
         get: async function () {

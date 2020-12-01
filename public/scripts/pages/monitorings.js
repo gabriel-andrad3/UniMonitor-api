@@ -3,8 +3,6 @@ let subjects = [];
 let monitors = [];
 
 async function getMonitorings() {
-    console.log("Entrou");
-
     let table = document.getElementById('monitorings');
 
     monitorings = await api.monitorings.get();
