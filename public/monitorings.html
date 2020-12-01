@@ -1,30 +1,67 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Monitorias - UniMonitor</title>
-        <script src="scripts/monitorings.js"></script>
-    </head>
-    <body>
-        <label for="monitorings">Selecione uma monitoria:</label>
-        <select name="monitorings" id="monitorings">
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
-        </select><br>
+    <script src="https://kit.fontawesome.com/4104f3f9e1.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-        <label for="id">Id:</label>
-        <input name="id" id="id" readonly/><br>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/pages/commons.js"></script>
+    <script src="scripts/pages/monitorings.js"></script>
+    <link rel="stylesheet" href="stylesheets/style.css">
 
-        <label for="subjects">Disciplinas:</label>
-        <select name="subjects" id="subjects"> 
-            
-        </select><br>
+    <title>Monitorias - UniMonitor</title>
+</head>
+<body onload="getMonitorings();">
+    <div class="menu">
+        <a href="/subjects.html"><h1>DISCIPLINAS</h1></a>
+        <a href="/monitorings.html"><h1>MONITORIAS</h1></a>
+        <a href="/users.html"><h1>USUÁRIOS</h1></a>
+    </div>
+    <div class="content">
+        <div class="title">
+            <h1>MONITORIAS</h1>
+            <button id="create" class="create" onclick="showCreateMonitoringModal();"><i class="fas fa-plus button-icon"></i><b>NOVA</b></button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>DISCIPLINA</th>
+                    <th>MONITOR</th>
+                    <th>AÇÕES</th>
+                </tr>
+            </thead>
+            <tbody id="monitorings" />
+        </table>
+        <div id="status" class="status">
+        </div>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <h1 id="modal-action"></h1>
+                <form id="form" action="JavaScript:saveMonitoring();">
+                    <div class="container">
+                        <label for="name">Id:</label>
+                        <input type="text" id="id" name="id" disabled/>
+                    </div>
 
-        <label for="monitors">Monitores:</label>
-        <select name="monitors" id="monitors"> 
+                    <div class="container">
+                        <label for="subject">Disciplina:</label>
+                        <select id="subject" name="subject"></select>
+                    </div>
 
-        </select><br><br>
+                    <div class="container">
+                        <label for="monitor">Monitor:</label>
+                        <select id="monitor" name="monitor"></select>
+                    </div>
 
-        <button onclick="createMonitoring();">Criar</button>
-        <button>Atualizar</button>
-        <button>Excluir</button>
-    </body>
-</html>
+                    <div class="container">
+                        <button id="save" type="submit" class="save"><i class="fas fa-save button-icon"></i>Salvar</button>
+                        <button id="cancel" type="reset" class="cancel" onclick="hideModal();"><i class="fas fa-times button-icon"></i>Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>

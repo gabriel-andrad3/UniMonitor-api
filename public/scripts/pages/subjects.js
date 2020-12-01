@@ -1,15 +1,9 @@
 let subjects = [];
 let professors = [];
 
-window.onclick = function(event) {
-    let modal = document.getElementById('modal');
-
-    if (event.target == modal) {
-        hideModal();
-    }
-}
-
 async function getSubjects() {
+    console.log("Entrou");
+
     let table = document.getElementById('subjects');
 
     subjects = await api.subjects.get();
@@ -144,32 +138,4 @@ function showCreateSubjectModal() {
     form.elements['name'].value = '';
     form.elements['professor'].selectedIndex = 0;
     form.elements['workload'].value = '';
-}
-
-function hideModal() {
-    let modal = document.getElementById('modal');
-
-    modal.style.display = 'none';   
-}
-
-function showModal() {
-    let modal = document.getElementById('modal');
-
-    modal.style.display = 'block';   
-}
-
-function setSuccess(text) {
-    let status = document.getElementById('status');
-
-    status.classList.remove('red-background');
-    status.classList.add('green-background');
-    status.innerText = text;
-}
-
-function setError(text) {
-    let status = document.getElementById('status');
-
-    status.classList.remove('green-background');
-    status.classList.add('red-background');
-    status.innerText = text;
 }

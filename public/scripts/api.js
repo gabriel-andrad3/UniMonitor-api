@@ -57,6 +57,46 @@ const api = {
                 resolveError(error);
             }
         }
+    },
+    monitorings: {
+        get: async function () {
+            try {
+                const response = await _client.get('/monitorings');
+        
+                return response.data;
+            }
+            catch (error) {
+                resolveError(error);
+            }
+        },
+        post: async function (monitoring) {
+            try {
+                const response = await _client.post('/monitorings', monitoring);
+
+                return response.data;
+            }
+            catch (error) {
+                resolveError(error);
+            }
+        },
+        put: async function (id, monitoring) {
+            try {
+                const response = await _client.put(`/monitorings/${id}`, monitoring);
+
+                return response.data;
+            }
+            catch (error) {
+                resolveError(error);
+            }
+        },
+        delete: async function (id) {
+            try {
+                await _client.delete(`/monitorings/${id}`);
+            }
+            catch (error) {
+                resolveError(error);
+            }
+        }
     }
 }
 
