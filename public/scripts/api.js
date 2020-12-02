@@ -126,6 +126,36 @@ const api = {
             }
         }
     },
+    appointments: {
+        get: async function () {
+            try {
+                const response = await _client.get('/appointments');
+        
+                return response.data;
+            }
+            catch (error) {
+                resolveError(error);
+            }
+        },
+        post: async function (appointment) {
+            try {
+                const response = await _client.post('/appointments', appointment);
+
+                return response.data;
+            }
+            catch (error) {
+                resolveError(error);
+            }
+        },
+        delete: async function (id) {
+            try {
+                await _client.delete(`/appointments/${id}`);
+            }
+            catch (error) {
+                resolveError(error);
+            }
+        }
+    },
     schedules: {
         get: async function () {
             try {

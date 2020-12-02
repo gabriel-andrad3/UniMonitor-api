@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+    <script src="https://kit.fontawesome.com/4104f3f9e1.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="scripts/api.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/pages/commons.js"></script>
+    <script src="scripts/pages/appointments.js"></script>
+    <link rel="stylesheet" href="stylesheets/style.css">
+
+    <title>Agendamentos - UniMonitor</title>
+</head>
+<body onload="getAppointments(); hideLinks();">
+    <div class="menu">
+        <a href="/subjects.html" id="subjects-link"><h1>DISCIPLINAS</h1></a>
+        <a href="/monitorings.html" id="monitorings-link"><h1>MONITORIAS</h1></a>
+        <a href="/users.html" id="users-link"><h1>USUÁRIOS</h1></a>
+        <a href="/schedules.html" id="schedules-link"><h1>HORÁRIOS</h1></a>
+        <a href="/appointments.html" id="schedules-link"><h1>AGENDAMENTOS</h1></a>
+    </div>
+    <div class="content">
+        <div class="title">
+            <h1>AGENDAMENTOS</h1>
+        </div>
+        <div>
+            <label for="monitorings">Monitoria:</label>
+            <select id="monitorings" name="monitorings"></select>
+            <label for="date">Data:</label>
+            <input type="date" id="date" name="date"></select>
+            <label for="monitoring-monitor">Monitor:</label>
+            <input type="text" id="monitoring-monitor" name="monitoring-monitor" disabled/>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>HORÁRIO</th>
+                    <th>DISPONIBILIDADE</th>
+                    <th>ALUNO</th>
+                    <th>AÇÕES</th>
+                </tr>
+            </thead>
+            <tbody id="schedules" />
+        </table>
+        <div id="status" class="status"></div>
+    </div>
+</body>
