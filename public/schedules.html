@@ -1,39 +1,76 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Horarios - UniMonitor</title>
-        <script src="scripts/schedules.js"></script>
-    </head>
-    <body> 
-        <label for="schedules">Selecione um horario: </label>
-        <select name="schedules" id="schedules" onchange="changeSchedule();">
-        
-        </select><br/>
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
-        <label for="id">Id: </label>
-        <input name="id" id="id" readonly/><br/>
+    <script src="https://kit.fontawesome.com/4104f3f9e1.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-        <label for="weekday">Dias da semana: </label>
-        <input name="weekday" id="weekday" /><br/>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/pages/commons.js"></script>
+    <script src="scripts/pages/schedules.js"></script>
+    <link rel="stylesheet" href="stylesheets/style.css">
 
-        <label for="begin">Inicio: </label>
-        <input name="begin" type="time" id="begin" /><br/>
+    <title>Horários - UniMonitor</title>
+</head>
+<body onload="getSubjects(); hideLinks();">
+    <div class="menu">
+        <a href="/subjects.html" id="subjects-link"><h1>DISCIPLINAS</h1></a>
+        <a href="/monitorings.html" id="monitorings-link"><h1>MONITORIAS</h1></a>
+        <a href="/users.html" id="users-link"><h1>USUÁRIOS</h1></a>
+        <a href="/schedules.html" id="schedules-link"><h1>HORÁRIOS</h1></a>
+    </div>
+    <div class="content">
+        <div class="title">
+            <h1>HORÁRIOS</h1>
+        </div>
+        <div>
+            <select id="view-monitoring" name="view-monitoring"></select>
+            <button id="create" class="create" onclick="showCreateMonitoringModal();"><i class="fas fa-plus button-icon"></i><b>NOVO</b></button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>DIA SEMANA</th>
+                    <th>HORÁRIO</th>
+                    <th>MONITOR</th>
+                    <th>AÇÕES</th>
+                </tr>
+            </thead>
+            <tbody id="schedules" />
+        </table>
+        <div id="status" class="status">
+        </div>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <h1 id="modal-action"></h1>
+                <form id="form" action="JavaScript:saveSchedule();">
+                    <div class="container">
+                        <label for="name">Monitoria:</label>
+                        <input type="text" id="monitoring" name="monitoring" disabled/>
+                    </div>
 
-        <label for="end">Fim: </label>
-        <input name="end" type="time" id="end" /><br/>
+                    <div class="container">
+                        <label for="weekday">Dia da Semana:</label>
+                        <select" id="weekday" name="weekday" />
+                    </div>
 
-        <label for="monitoring">Monitoria: </label>
-        <select name="monitoring" id="monitoring">
+                    <div class="container">
+                        <label for="begin">Horário Início:</label>
+                        <select id="begin" name="begin"></select>
+                    </div>
 
-        </select>
-        <br/>
+                    <div class="container">
+                        <label for="end">Horário Fim:</label>
+                        <select id="end" name="end"></select>
+                    </div>
 
-        <button onclick="createSubject();">Cadastrar</button>
-        <button onclick="updateSubject();">Editar</button>
-        <button onclick="deleteSubject();">Excluir</button>
-
-        <script>
-            getSubjects(changeSchedule);
-        </script>
-    </body>
-</html>
+                    <div class="container">
+                        <button id="save" type="submit" class="save"><i class="fas fa-save button-icon"></i>Salvar</button>
+                        <button id="cancel" type="reset" class="cancel" onclick="hideModal();"><i class="fas fa-times button-icon"></i>Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>

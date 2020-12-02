@@ -6,6 +6,25 @@ window.onclick = function(event) {
     }
 }
 
+function userHasRoles([roles]) {
+    let userInfo = JSON.parse(localStorage.getItem('user'));
+
+    let existentRoles = userInfo.roles.filter(role => roles.includes(role.name));
+
+    return existentRoles.length !== 0;
+}
+
+function hideLinks() {
+    let subjectsLink = document.getElementById('subjects-link');
+    subjectsLink.hidden = !userHasRoles(['Admin']);
+
+    let monitoringsLink = document.getElementById('monitorings-link');
+    monitoringsLink.hidden = !userHasRoles(['Admin', 'Professor']);
+
+    let usersLink = document.getElementById('users-link');
+    usersLink.hidden = !userHasRoles(['Admin']);
+}
+
 function hideModal() {
     let modal = document.getElementById('modal');
 

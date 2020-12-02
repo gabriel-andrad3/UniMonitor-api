@@ -4,7 +4,7 @@ const { validateName, validateRegister, validatePassword, validateRoles } = requ
 const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 const router = express.Router();
 
-router.get('/', async function(req, res, next) {
+router.get('/',async function(req, res, next) {
   try {
     res.send(await userService.getUsers());
   }

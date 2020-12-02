@@ -47,6 +47,8 @@ async function getRoles() {
     sortById(roles);
 
     let div = document.getElementById('roles');
+
+    div.innerHTML = '';
     
     roles.forEach(role => {
         let container = document.createElement('div');

@@ -5,6 +5,12 @@ const _client = axios.create({
     }
 })
 
+let token = localStorage.getItem('token');
+
+if (token) {
+    _client.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+}
+
 const api = {
     roles: {
         get: async function () {
@@ -114,6 +120,18 @@ const api = {
         delete: async function (id) {
             try {
                 await _client.delete(`/monitorings/${id}`);
+            }
+            catch (error) {
+                resolveError(error);
+            }
+        }
+    },
+    sessions: {
+        post: async function (register, password) {
+            try {
+                const response = await _client.post('/sessions',  { register: register, password: password });
+
+                return response.data.token;
             }
             catch (error) {
                 resolveError(error);

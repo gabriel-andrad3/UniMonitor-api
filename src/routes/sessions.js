@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const sessionService = require('../services/sessionService');
-const { validateRegister, validatePassword } = require('../validations/userValidation');
+const { validateRegister, validatePassword } = require('../validations/sessionsValidation');
 
 router.post('/', async function(req, res, next) {
   try {

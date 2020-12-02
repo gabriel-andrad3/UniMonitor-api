@@ -42,7 +42,7 @@ async function getUserAndPasswordByRegister(register) {
                     u.id as user_id, 
                     u."name" as user_name, 
                     u.register as user_register, 
-                    u.password as user_password,
+                    u."password" as user_password,
                     r.id as role_id, 
                     r."name" as role_name 
                 from 
@@ -50,13 +50,14 @@ async function getUserAndPasswordByRegister(register) {
                 inner join user_role ur
                     on u.id = ur.user_id 
                 inner join "role" r 
-                    on ur.role_id = r.id`;
+                    on ur.role_id = r.id
+                where u.register = '${register}'`;
     
     let result = await pool.query(query);
 
     const user = resultToUser(result);
 
-    return { user: user, passwordHash: result.rows[0].user_password };
+    return { user: user, passwordHash: user ? result.rows[0].user_password : null };
 }
 
 async function insertUser(user, password) {
