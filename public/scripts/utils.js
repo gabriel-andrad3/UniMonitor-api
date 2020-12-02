@@ -26,6 +26,12 @@ function translateWeekday(value) {
     return weekdayValueText[value];
 }
 
+function translateWeekdayFromIndex(index) {
+    const weekdays = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+
+    return weekdays[index];
+}
+
 const weekdays = [
     'segunda',
     'terça',

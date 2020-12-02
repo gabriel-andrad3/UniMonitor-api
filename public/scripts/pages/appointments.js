@@ -1,9 +1,9 @@
 let appointments = [];
 let monitorings = [];
+let schedules = [];
 
 async function getAppointments() {
     let date = document.getElementById('date');
-    console.log(date);
 
     date.valueAsDate = new Date();
 
@@ -11,6 +11,7 @@ async function getAppointments() {
     sortById(appointments);
 
     await getMonitorings();
+    await getSchedules();
 }
 
 async function getMonitorings() {
@@ -35,16 +36,26 @@ async function getMonitorings() {
     select.onchange = () => showAppointments();
 }
 
-async function showAppointments(monitoringId) {
+async function getSchedules() {
+    schedules = await api.schedules.get();
+    sortById(schedules);
+}
+
+async function showAppointments() {
     let select = document.getElementById('monitorings');
     let monitoringId = Number(select.options[select.selectedIndex].value);
 
     let date = document.getElementById('date').value;
-    console.log(date);
 
-    let schedulesToShow = schedules.filter(x => x.monitoring.id === monitoringId);
+    let monitoringAppointments = appointments.filter(x => x.schedule.monitoring.id === monitoringId);
+    console.log(monitoringAppointments);
+    // && (new Date(x.begin)).getDate() === new Date(date).getDate()
+    console.log(monitoringAppointments[0]);
+    console.log(new Date(monitoringAppointments[0].begin));
+    console.log(new Date(date + 'T00:00:00.000Z'));
 
-    let monitoring = monitorings.find(x => x.id === monitoringId);
+    let monitoringSchedulesDate = schedules.filter(x => x.monitoring.id === monitoringId && translateWeekday(x.weekday) === translateWeekdayFromIndex(new Date(date).getDay()));
+    console.log(monitoringSchedulesDate);
 
     let monitor = document.getElementById('monitoring-monitor');
     monitor.value = monitoring.monitor.name;
