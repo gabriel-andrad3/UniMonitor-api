@@ -20,6 +20,18 @@ function validateRegister(register) {
     }
 }
 
+function validatePassword(password) {
+    if (typeof(password) !== "string") {
+        throw new BadRequest("register must be a string");
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
+
+    if (!passwordRegex.test(password)) {
+        throw new BadRequest("a senha deve possuir entre 8 e 16 caracteres, um número, uma letra minúscula, uma letra maiúscula e um caracter especial");
+    }
+}
+
 function validateRoles(roles) {
     if (!roles instanceof Array) {
         throw new BadRequest("funções deve ser um Array");
@@ -39,5 +51,6 @@ function validateRoles(roles) {
 module.exports = {
     validateName,
     validateRegister,
+    validatePassword,
     validateRoles
 }

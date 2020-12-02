@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { validateName, validateWorkload, validateProfessor } = require('../validations/subjectValidation');
 const subjectService = require('../services/subjectService');
+const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
 router.get('/', async function(req, res, next) {
     try {

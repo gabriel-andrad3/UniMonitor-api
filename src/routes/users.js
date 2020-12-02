@@ -1,10 +1,10 @@
 const express = require('express');
 const userService = require('../services/userService');
-const { validateName, validateRegister, validateRoles } = require('../validations/userValidation');
-
+const { validateName, validateRegister, validatePassword, validateRoles } = require('../validations/userValidation');
+const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 const router = express.Router();
 
-router.get('/', async function(req, res, next) {
+router.get('/',async function(req, res, next) {
   try {
     res.send(await userService.getUsers());
   }
@@ -26,9 +26,20 @@ router.post('/', async function(req, res, next) {
   try {
     validateName(req.body.name);
     validateRegister(req.body.register);
+    validatePassword(req.body.password);
+
+    res.send(await userService.createUser(req.body.name, req.body.register, req.body.password));
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
+router.put('/:id', async function(req, res, next) {
+  try {
     validateRoles(req.body.roles);
 
-    res.send(await userService.createUser(req.body.name, req.body.register, req.body.roles));
+    res.send(await userService.updateUser(req.params.id, req.body.roles));
   }
   catch (error) {
     next(error);

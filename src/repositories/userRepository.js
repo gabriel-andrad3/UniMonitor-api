@@ -1,3 +1,4 @@
+const { PayloadTooLarge } = require('http-errors');
 const pool = require('../../config/database');
 const { Role, User } = require('../models');
 
@@ -36,14 +37,37 @@ async function getUserByRegister(register) {
     return resultToUser(result);
 }
 
-async function insertUser(user) {
+async function getUserAndPasswordByRegister(register) {
+   const query = `select 
+                    u.id as user_id, 
+                    u."name" as user_name, 
+                    u.register as user_register, 
+                    u."password" as user_password,
+                    r.id as role_id, 
+                    r."name" as role_name 
+                from 
+                    "user" u
+                inner join user_role ur
+                    on u.id = ur.user_id 
+                inner join "role" r 
+                    on ur.role_id = r.id
+                where u.register = '${register}'`;
+    
+    let result = await pool.query(query);
+
+    const user = resultToUser(result);
+
+    return { user: user, passwordHash: user ? result.rows[0].user_password : null };
+}
+
+async function insertUser(user, password) {
     try {
         await pool.query('begin');
         
         const userQuery = `insert into "user" 
-                                ("name", register) 
+                                ("name", register, password) 
                             values 
-                                ('${user.name}', '${user.register}') 
+                                ('${user.name}', '${user.register}', '${password}') 
                             returning id`;
 
         let userResult = await pool.query(userQuery);
@@ -52,6 +76,27 @@ async function insertUser(user) {
 
         const userRolesQuery = `insert into user_role (role_id, user_id) values ${user.roles.map(role => `(${role.id}, ${user.id})`).join(', ')}`;
         await pool.query(userRolesQuery);
+
+        pool.query('commit');
+
+        return user;
+    }
+    catch (e) {
+        pool.query('rollback');
+
+        throw e;
+    }
+}
+
+async function updateUser(user) {
+    try {
+        await pool.query('begin');
+        
+        const deleteRolesQuery = `delete from user_role where user_id = ${user.id}`;
+        await pool.query(deleteRolesQuery);
+
+        const insertRolesQuery = `insert into user_role (role_id, user_id) values ${user.roles.map(role => `(${role.id}, ${user.id})`).join(', ')}`;
+        await pool.query(insertRolesQuery);
 
         pool.query('commit');
 
@@ -95,5 +140,7 @@ module.exports = {
     getUsers,
     getUserById,
     getUserByRegister,
-    insertUser
+    getUserAndPasswordByRegister,
+    insertUser,
+    updateUser
 }
