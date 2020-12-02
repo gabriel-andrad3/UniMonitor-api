@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-//const { validateWeekday, validateBegin, validateEnd, validateMonitoring } = require('../validations/scheduleValidation');
+const { validateWeekday, validateBegin, validateEnd, validateMonitoring } = require('../validations/scheduleValidation');
 const scheduleService = require('../services/scheduleService');
 
 router.get('/', async function(req, res, next) {
@@ -14,10 +14,10 @@ router.get('/', async function(req, res, next) {
 
 router.post('/', async function(req, res, next) {
     try {
-     // validateWeekday(req.body.weekday);
-     // validateBegin(req.body.begin);
-     // validateEnd(req.body.end);
-     // validateMonitoring(req.body.monitoring);
+      validateWeekday(req.body.weekday);
+      validateBegin(req.body.begin);
+      validateEnd(req.body.end);
+      validateMonitoring(req.body.monitoring);
   
       res.send(await scheduleService.createSchedule(req.body.weekday, req.body.begin, req.body.end, req.body.monitoring));
     }
@@ -28,10 +28,10 @@ router.post('/', async function(req, res, next) {
 
 router.put('/:id', async function(req, res, next) {
   try {
-   // validateWeekday(req.body.weekday);
-   // validateBegin(req.body.begin);
-    //validateEnd(req.body.end);
-    //validateMonitoring(req.body.monitoring);
+    validateWeekday(req.body.weekday);
+    validateBegin(req.body.begin);
+    validateEnd(req.body.end);
+    validateMonitoring(req.body.monitoring);
 
     res.send(await scheduleService.updateSchedule(req.params.id, req.body.weekday, req.body.begin, req.body.end, req.body.monitoring));
   }

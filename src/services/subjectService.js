@@ -1,6 +1,7 @@
 const { Subject } = require('../models');
-const { subjectRepository, userRepository } = require('../repositories');
+const { subjectRepository, userRepository, monitoringRepository } = require('../repositories');
 const { NotFound, Conflict } = require('../utils/errors');
+const monitoringService = require('./monitoringService');
 
 async function getSubjects() {
     let subjects = await subjectRepository.getSubjects();
@@ -58,7 +59,13 @@ async function deleteSubject(id) {
     if (!existentSubject) {
         throw new NotFound(`disciplina com id ${id} não existe`);
     }
-
+    
+    const monitorings = await monitoringService.getMonitorings();
+    const existentMonitoring = monitorings.find(monitoring => monitoring.subject.id == id);
+    
+    if (existentMonitoring) {
+        throw new Conflict(`existe monitoria de id ${existentMonitoring.id} cadastrada para essa disciplina`);
+    }
     await subjectRepository.deleteSubject(existentSubject);
 }
 

@@ -1,6 +1,7 @@
 const Schedule = require('../models/Schedule');
 const { scheduleRepository, monitoringRepository, subjectRepository, userRepository } = require('../repositories');
 const { NotFound, Conflict } = require('../utils/errors');
+const appointmentService = require('./appointmentService');
 
 async function getSchedules() {
     let schedules = await scheduleRepository.getSchedules();
@@ -48,6 +49,13 @@ async function deleteSchedule(id) {
 
     if (!existentSchedule) {
         throw new NotFound(`horário com id ${id} não existe`);
+    }
+
+    const appointments = await appointmentService.getAppointments();
+    const existentAppointment = appointments.find(appointment => appointment.schedule.id == id);
+    
+    if (existentAppointment) {
+        throw new Conflict(`existe agendamento de id ${existentAppointment.id} cadastrada para esse horário`);
     }
 
     await scheduleRepository.deleteSchedule(existentSchedule);

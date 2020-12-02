@@ -1,6 +1,7 @@
 const Monitoring = require('../models/Monitoring');
 const { monitoringRepository, subjectRepository, userRepository } = require('../repositories');
 const { Conflict, NotFound } = require('../utils/errors');
+const scheduleService = require('./scheduleService');
 
 async function getMonitorings() {
     let monitorings = await monitoringRepository.getMonitorings();
@@ -37,7 +38,14 @@ async function insertMonitoring(subject, monitor) {
     if (!monitorRole) {
         throw new Conflict(`usuário com id ${monitor.id} deve ser um monitor`);
     }
+
+    const monitorings = await getMonitorings();
+    const equalMonitoring = monitorings.find(monitoring => (monitoring.monitor.id == monitor.id) && (monitoring.subject.id == subject.id));
     
+    if (equalMonitoring) {
+        throw new Conflict(`monitoria já cadastrada`);
+    }
+
     return await monitoringRepository.insertMonitoring(new Monitoring(existentSubject, existentMonitor));
 }
 
@@ -66,6 +74,13 @@ async function updateMonitoring(subject, monitor, id) {
     if (!monitorRole) {
         throw new Conflict(`usuário com id ${monitor.id} deve ser um monitor`);
     }
+
+    const monitorings = await getMonitorings();
+    const equalMonitoring = monitorings.find(monitoring => (monitoring.monitor.id == monitor.id) && (monitoring.subject.id == subject.id));
+    
+    if (equalMonitoring) {
+        throw new Conflict(`monitoria já cadastrada`);
+    }
     
     return await monitoringRepository.updateMonitoring(new Monitoring(existentSubject, existentMonitor, id));
 }
@@ -77,6 +92,13 @@ async function deleteMonitoring(id) {
         throw new NotFound(`monitoria com id ${id} não existe`);
     }
     
+    const schedules = await scheduleService.getSchedules();
+    const existentSchedule = schedules.find(schedule => schedule.monitoring.id == id);
+    
+    if (existentSchedule) {
+        throw new Conflict(`existe horário de id ${existentSchedule.id} cadastrada para essa monitoria`);
+    }
+
     await monitoringRepository.deleteMonitoring(id);
 }
 
