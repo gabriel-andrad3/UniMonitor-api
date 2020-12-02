@@ -13,7 +13,7 @@
 
     <title>Horários - UniMonitor</title>
 </head>
-<body onload="getSubjects(); hideLinks();">
+<body onload="getSchedules(); hideLinks();">
     <div class="menu">
         <a href="/subjects.html" id="subjects-link"><h1>DISCIPLINAS</h1></a>
         <a href="/monitorings.html" id="monitorings-link"><h1>MONITORIAS</h1></a>
@@ -25,8 +25,8 @@
             <h1>HORÁRIOS</h1>
         </div>
         <div>
-            <select id="view-monitoring" name="view-monitoring"></select>
-            <button id="create" class="create" onclick="showCreateMonitoringModal();"><i class="fas fa-plus button-icon"></i><b>NOVO</b></button>
+            <select id="subjects" name="subjects"></select>
+            <button id="create" class="create" onclick="showCreateScheduleModal();"><i class="fas fa-plus button-icon"></i><b>NOVO</b></button>
         </div>
         <table>
             <thead>
@@ -45,14 +45,16 @@
             <div class="modal-content">
                 <h1 id="modal-action"></h1>
                 <form id="form" action="JavaScript:saveSchedule();">
+                    <input type="text" id="id" hidden/>
+
                     <div class="container">
-                        <label for="name">Monitoria:</label>
-                        <input type="text" id="monitoring" name="monitoring" disabled/>
+                        <label for="name">Disciplina:</label>
+                        <input type="text" id="subject" name="subject" disabled/>
                     </div>
 
                     <div class="container">
                         <label for="weekday">Dia da Semana:</label>
-                        <select" id="weekday" name="weekday" />
+                        <select id="weekday" name="weekday"></select>
                     </div>
 
                     <div class="container">

@@ -12,3 +12,29 @@ function translateRoleName(name) {
 
     return roleNames[name];
 }
+
+function translateWeekday(value) {
+    const weekdayValueText = {
+        segunda: 'Segunda',
+        terça: 'Terça',
+        quarta: 'Quarta',
+        quinta: 'Quinta',
+        sexta: 'Sexta',
+        sábado: 'Sábado'
+    }
+
+    return weekdayValueText[value];
+}
+
+const weekdays = [
+    'segunda',
+    'terça',
+    'quarta',
+    'quinta',
+    'sexta',
+    'sábado'
+]
+
+function toTimeFormat(number) {
+    return (number).toLocaleString('pt-BR', {minimumIntegerDigits: 2, useGrouping:false});
+}
