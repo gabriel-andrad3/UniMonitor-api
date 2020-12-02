@@ -13,10 +13,10 @@ async function getSchedules() {
 }
 
 async function getMonitorings() {
-    let monitorings = await api.monitorings.get();
+    monitorings = await api.monitorings.get();
     sortById(monitorings);
 
-    let select = document.getElementById('subjects');
+    let select = document.getElementById('monitorings');
 
     select.innerHTML = '';
     
@@ -37,6 +37,11 @@ async function getMonitorings() {
 async function showSchedules(monitoringId) {
     let schedulesToShow = schedules.filter(x => x.monitoring.id === monitoringId);
 
+    let monitoring = monitorings.find(x => x.id === monitoringId);
+
+    let monitor = document.getElementById('monitoring-monitor');
+    monitor.value = monitoring.monitor.name;
+
     let table = document.getElementById('schedules');
 
     table.innerHTML = '';
@@ -49,9 +54,6 @@ async function showSchedules(monitoringId) {
 
         let scheduleCell = row.insertCell();
         scheduleCell.innerHTML  = `${schedule.begin} - ${schedule.end}`;
-
-        let monitorCell = row.insertCell();
-        monitorCell.innerHTML  = schedule.monitoring.monitor.name;
 
         let actionsCell = row.insertCell();
         
@@ -75,8 +77,6 @@ async function showSchedules(monitoringId) {
 
 async function saveSchedule() {
     let form = document.getElementById('form');
-
-    let  = document.getElementById('subjects');
 
     let schedule = {
         begin: form.elements['begin'].value,
@@ -131,7 +131,7 @@ function showEditScheduleModal(schedule) {
 
     console.log(schedule);
 
-    form.elements['id'].value = schedule.id;
+    form.elements['monitor'].value = schedule.monitoring.monitor.name;
     form.elements['subject'].value = schedule.monitoring.subject.name;
     form.elements['weekday'].value = schedule.weekday;
     form.elements['begin'].value = schedule.begin;
@@ -144,9 +144,13 @@ function showCreateScheduleModal() {
     let action = document.getElementById('modal-action');
     action.innerHTML = 'NOVO HORÁRIO';
 
+    let monitor = document.getElementById('monitoring-monitor');
+
     let form = document.getElementById('form');
-    let monitorings = document.getElementById('subjects');
+
+    let monitorings = document.getElementById('monitorings');
     
+    form.elements['monitor'].value = monitor.value;
     form.elements['subject'].value = monitorings.options[monitorings.selectedIndex].text;
     form.elements['weekday'].value = '';
     form.elements['begin'].value = '';

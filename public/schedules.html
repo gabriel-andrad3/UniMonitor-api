@@ -25,7 +25,10 @@
             <h1>HORÁRIOS</h1>
         </div>
         <div>
-            <select id="subjects" name="subjects"></select>
+            <label for="monitorings">Monitoria:</label>
+            <select id="monitorings" name="monitorings"></select>
+            <label for="monitoring-monitor">Monitor:</label>
+            <input type="text" id="monitoring-monitor" name="monitoring-monitor" disabled/>
             <button id="create" class="create" onclick="showCreateScheduleModal();"><i class="fas fa-plus button-icon"></i><b>NOVO</b></button>
         </div>
         <table>
@@ -33,7 +36,6 @@
                 <tr>
                     <th>DIA SEMANA</th>
                     <th>HORÁRIO</th>
-                    <th>MONITOR</th>
                     <th>AÇÕES</th>
                 </tr>
             </thead>
@@ -50,6 +52,11 @@
                     <div class="container">
                         <label for="name">Disciplina:</label>
                         <input type="text" id="subject" name="subject" disabled/>
+                    </div>
+
+                    <div class="container">
+                        <label for="name">Monitor:</label>
+                        <input type="text" id="monitor" name="monitor" disabled/>
                     </div>
 
                     <div class="container">
