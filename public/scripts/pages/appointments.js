@@ -108,7 +108,7 @@ async function showAppointments() {
         appointmentCell.innerHTML  = `${appointment.begin.toLocaleTimeString('pt-BR')} - ${appointment.end.toLocaleTimeString('pt-BR')}`;
 
         let avaiableCell = row.insertCell();
-        avaiableCell.innerHTML  = appointment.avaiable ? 'Disponível' : 'Agendada';
+        avaiableCell.innerHTML  = appointment.avaiable ? appointment.begin.getTime() > (new Date()).getTime() ? 'Disponível' : 'Passada' : 'Agendada';
         
         let studentCell = row.insertCell();
         studentCell.innerHTML  = appointment.student ? appointment.student.name : '';

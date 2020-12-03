@@ -43,7 +43,7 @@ async function showSchedules(monitoringId) {
     monitor.value = monitoring.monitor.name;
 
     let createButton = document.getElementById('create');
-    createButton.hidden = !((monitoring.monitor.id === getUser().id) || (monitoring && userHasRoles(['Admin'])));
+    createButton.hidden = !((monitoring.monitor.id === getUser().id));
 
     let table = document.getElementById('schedules');
 
@@ -60,7 +60,7 @@ async function showSchedules(monitoringId) {
 
         let actionsCell = row.insertCell();
         
-        if (monitoring.monitor.id === getUser().id || userHasRoles(['Admin'])) {
+        if (monitoring.monitor.id === getUser().id) {
             let editButton = document.createElement('button');
             editButton.classList.add('icon');
             editButton.classList.add('blue');
