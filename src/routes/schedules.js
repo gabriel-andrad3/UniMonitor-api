@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { validateWeekday, validateBegin, validateEnd, validateMonitoring } = require('../validations/scheduleValidation');
+const { validateWeekday, validateBegin, validateEnd, validateMonitoring, validateTime } = require('../validations/scheduleValidation');
 const scheduleService = require('../services/scheduleService');
 const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
@@ -18,6 +18,7 @@ router.post('/', handleRoleAuthorization(['Monitor', 'Admin']), async function(r
       validateWeekday(req.body.weekday);
       validateBegin(req.body.begin);
       validateEnd(req.body.end);
+      validateTime(req.body.begin, req.body.end);
       validateMonitoring(req.body.monitoring);
   
       res.send(await scheduleService.createSchedule(req.body.weekday, req.body.begin, req.body.end, req.body.monitoring));
@@ -32,6 +33,7 @@ router.put('/:id', handleRoleAuthorization(['Monitor', 'Admin']), async function
     validateWeekday(req.body.weekday);
     validateBegin(req.body.begin);
     validateEnd(req.body.end);
+    validateTime(req.body.begin, req.body.end);
     validateMonitoring(req.body.monitoring);
 
     res.send(await scheduleService.updateSchedule(req.params.id, req.body.weekday, req.body.begin, req.body.end, req.body.monitoring));

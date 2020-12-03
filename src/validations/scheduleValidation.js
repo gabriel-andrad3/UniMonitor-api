@@ -40,9 +40,29 @@ function validateMonitoring(monitoring) {
     }
 }
 
+function validateTime(begin, end) {
+    let beginParts = begin.split(':');
+
+    let beginHour = Number(beginParts[0]);
+    let beginMinutes = Number(beginParts[1]);
+
+    let endParts = end.split(':');
+
+    let endHour = Number(endParts[0]);
+    let endMinutes = Number(endParts[1]);
+
+    if (beginHour > endHour) {
+        throw new BadRequest("o horário de início deve ser menor que o horário de fim");
+    } 
+    else if (beginHour === endHour && beginMinutes > endMinutes)  {
+        throw new BadRequest("o horário de início deve ser menor que o horário de fim");
+    }
+}
+
 module.exports = {
     validateWeekday,
     validateBegin,
     validateEnd,
-    validateMonitoring
+    validateMonitoring,
+    validateTime
 }
