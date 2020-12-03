@@ -10,7 +10,7 @@ async function login() {
         localStorage.setItem('token', token);
         localStorage.setItem('user', atob(token.split('.')[1]));
 
-        window.location.href = 'subjects.html';
+        window.location.href = 'schedules.html';
     }
     catch (error) {
         setError(error);

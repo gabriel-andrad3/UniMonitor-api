@@ -42,6 +42,9 @@ async function showSchedules(monitoringId) {
     let monitor = document.getElementById('monitoring-monitor');
     monitor.value = monitoring.monitor.name;
 
+    let createButton = document.getElementById('create');
+    createButton.hidden = !((monitoring.monitor.id === getUser().id) || (monitoring && userHasRoles(['Admin'])));
+
     let table = document.getElementById('schedules');
 
     table.innerHTML = '';
@@ -57,21 +60,23 @@ async function showSchedules(monitoringId) {
 
         let actionsCell = row.insertCell();
         
-        let editButton = document.createElement('button');
-        editButton.classList.add('icon');
-        editButton.classList.add('blue');
-        editButton.innerHTML  = '<i class="fas fa-pencil-alt"></i>';
-        editButton.onclick = () => showEditScheduleModal(schedule);
-
-        actionsCell.appendChild(editButton);
-
-        let deleteButton = document.createElement('button');
-        deleteButton.classList.add('icon');
-        deleteButton.classList.add('red');
-        deleteButton.innerHTML  = '<i class="fas fa-trash-alt"></i>';
-        deleteButton.onclick = () => deleteSchedule(schedule);
-
-        actionsCell.appendChild(deleteButton);
+        if (monitoring.monitor.id === getUser().id || userHasRoles(['Admin'])) {
+            let editButton = document.createElement('button');
+            editButton.classList.add('icon');
+            editButton.classList.add('blue');
+            editButton.innerHTML  = '<i class="fas fa-pencil-alt"></i>';
+            editButton.onclick = () => showEditScheduleModal(schedule);
+    
+            actionsCell.appendChild(editButton);
+    
+            let deleteButton = document.createElement('button');
+            deleteButton.classList.add('icon');
+            deleteButton.classList.add('red');
+            deleteButton.innerHTML  = '<i class="fas fa-trash-alt"></i>';
+            deleteButton.onclick = () => deleteSchedule(schedule);
+    
+            actionsCell.appendChild(deleteButton);
+        }
     });
 }
 

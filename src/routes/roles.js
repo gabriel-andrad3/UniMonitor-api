@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
 const roleService = require('../services/roleService');
 
-router.get('/', async function(req, res, next) {
+router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
     try {
         res.send(await roleService.getRoles());
     }

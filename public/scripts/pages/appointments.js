@@ -109,10 +109,10 @@ async function showAppointments() {
 
         let avaiableCell = row.insertCell();
         avaiableCell.innerHTML  = appointment.avaiable ? 'Disponível' : 'Agendada';
-
+        
         let studentCell = row.insertCell();
         studentCell.innerHTML  = appointment.student ? appointment.student.name : '';
-
+        
         let actionsCell = row.insertCell();
         
         if (appointment.begin.getTime() > (new Date()).getTime()) {

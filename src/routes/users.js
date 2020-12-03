@@ -4,7 +4,7 @@ const { validateName, validateRegister, validatePassword, validateRoles } = requ
 const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 const router = express.Router();
 
-router.get('/',async function(req, res, next) {
+router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
   try {
     res.send(await userService.getUsers());
   }
@@ -13,7 +13,7 @@ router.get('/',async function(req, res, next) {
   }
 });
 
-router.get('/:id', async function(req, res, next) {
+router.get('/:id', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
   try {
     res.send(await userService.getUser(req.params.id));
   }
@@ -35,7 +35,7 @@ router.post('/', async function(req, res, next) {
   }
 });
 
-router.put('/:id', async function(req, res, next) {
+router.put('/:id', handleRoleAuthorization(['Admin']), async function(req, res, next) {
   try {
     validateRoles(req.body.roles);
 

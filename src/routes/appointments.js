@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const appointmentService = require('../services/appointmentService');
-const { validateStudent, validateSchedule } = require('../validations/appointmentValidation')
+const { validateStudent, validateSchedule } = require('../validations/appointmentValidation');
+const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
-router.get('/', async function(req, res, next) {
+router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
     try {
         res.send(await appointmentService.getAppointments());
     }
@@ -12,9 +13,8 @@ router.get('/', async function(req, res, next) {
     }
 });
 
-router.post('/', async function(req, res, next) {
+router.post('/', handleRoleAuthorization(['Student']), async function(req, res, next) {
     try {
-        // validate begin end
         validateStudent(req.body.student);
         validateSchedule(req.body.schedule);
         
@@ -25,9 +25,8 @@ router.post('/', async function(req, res, next) {
     }
 });
 
-router.put('/:id', async function(req, res, next) {
+router.put('/:id', handleRoleAuthorization(['Student']), async function(req, res, next) {
     try {
-        // validate begin end
         validateStudent(req.body.student);
         validateSchedule(req.body.schedule);
         
@@ -38,7 +37,7 @@ router.put('/:id', async function(req, res, next) {
     }
 });
 
-router.delete('/:id', async function(req, res, next) {
+router.delete('/:id', handleRoleAuthorization(['Student']), async function(req, res, next) {
     try {
         res.send(await appointmentService.deleteAppointment(req.params.id));
     }

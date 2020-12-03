@@ -19,7 +19,7 @@
         <a href="/monitorings.html" id="monitorings-link"><h1>MONITORIAS</h1></a>
         <a href="/users.html" id="users-link"><h1>USUÁRIOS</h1></a>
         <a href="/schedules.html" id="schedules-link"><h1>HORÁRIOS</h1></a>
-        <a href="/appointments.html" id="schedules-link"><h1>AGENDAMENTOS</h1></a>
+        <a href="/appointments.html" id="appointments-link"><h1>AGENDAMENTOS</h1></a>
     </div>
     <div class="content">
         <div class="title">
@@ -30,7 +30,7 @@
             <select id="monitorings" name="monitorings"></select>
             <label for="monitoring-monitor">Monitor:</label>
             <input type="text" id="monitoring-monitor" name="monitoring-monitor" disabled/>
-            <button id="create" class="create" onclick="showCreateScheduleModal();"><i class="fas fa-plus button-icon"></i><b>NOVO</b></button>
+            <button id="create" class="create" onclick="showCreateScheduleModal();" hidden><i class="fas fa-plus button-icon"></i><b>NOVO</b></button>
         </div>
         <table>
             <thead>

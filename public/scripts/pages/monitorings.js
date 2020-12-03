@@ -11,6 +11,9 @@ async function getMonitorings() {
     await getSubjects();
     await getMonitors();
 
+    let createButton = document.getElementById('create');
+    createButton.hidden = !userHasRoles(['Admin']);
+
     table.innerHTML  = '';
 
     monitorings.forEach(monitoring => {
@@ -27,21 +30,23 @@ async function getMonitorings() {
         
         let actionsCell = row.insertCell();
         
-        let editButton = document.createElement('button');
-        editButton.classList.add('icon');
-        editButton.classList.add('blue');
-        editButton.innerHTML  = '<i class="fas fa-pencil-alt"></i>';
-        editButton.onclick = () => showEditMonitoringModal(monitoring);
+        if (monitoring.subject.professor.id === getUser().id || userHasRoles(['Admin'])) {
+            let editButton = document.createElement('button');
+            editButton.classList.add('icon');
+            editButton.classList.add('blue');
+            editButton.innerHTML  = '<i class="fas fa-pencil-alt"></i>';
+            editButton.onclick = () => showEditMonitoringModal(monitoring);
 
-        actionsCell.appendChild(editButton);
+            actionsCell.appendChild(editButton);
 
-        let deleteButton = document.createElement('button');
-        deleteButton.classList.add('icon');
-        deleteButton.classList.add('red');
-        deleteButton.innerHTML  = '<i class="fas fa-trash-alt"></i>';
-        deleteButton.onclick = () => deleteMonitoring(monitoring);
+            let deleteButton = document.createElement('button');
+            deleteButton.classList.add('icon');
+            deleteButton.classList.add('red');
+            deleteButton.innerHTML  = '<i class="fas fa-trash-alt"></i>';
+            deleteButton.onclick = () => deleteMonitoring(monitoring);
 
-        actionsCell.appendChild(deleteButton);
+            actionsCell.appendChild(deleteButton);
+        }
     });
 }
 
@@ -137,6 +142,7 @@ function showEditMonitoringModal(subject) {
     let form = document.getElementById('form');
 
     form.elements['id'].value = subject.id;
+    form.elements['subject'].disabled = !(subject.monitor.id === getUser().id || userHasRoles(['Admin']));
     form.elements['subject'].value = subject.subject.id;
     form.elements['monitor'].value = subject.monitor.id;
 }
@@ -150,6 +156,7 @@ function showCreateMonitoringModal() {
     let form = document.getElementById('form');
 
     form.elements['id'].value = '';
+    form.elements['subject'].disabled = false;
     form.elements['subject'].selectedIndex = 0;
     form.elements['monitor'].selectedIndex = 0;
 }

@@ -13,18 +13,18 @@
 
     <title>Monitorias - UniMonitor</title>
 </head>
-<body onload="getMonitorings();">
+<body onload="getMonitorings(); hideLinks();">
     <div class="menu">
         <a href="/subjects.html" id="subjects-link"><h1>DISCIPLINAS</h1></a>
         <a href="/monitorings.html" id="monitorings-link"><h1>MONITORIAS</h1></a>
         <a href="/users.html" id="users-link"><h1>USUÁRIOS</h1></a>
         <a href="/schedules.html" id="schedules-link"><h1>HORÁRIOS</h1></a>
-        <a href="/appointments.html" id="schedules-link"><h1>AGENDAMENTOS</h1></a>
+        <a href="/appointments.html" id="appointments-link"><h1>AGENDAMENTOS</h1></a>
     </div>
     <div class="content">
         <div class="title">
             <h1>MONITORIAS</h1>
-            <button id="create" class="create" onclick="showCreateMonitoringModal();"><i class="fas fa-plus button-icon"></i><b>NOVA</b></button>
+            <button id="create" class="create" onclick="showCreateMonitoringModal();" hidden><i class="fas fa-plus button-icon"></i><b>NOVA</b></button>
         </div>
         <table>
             <thead>

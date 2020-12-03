@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { validateWeekday, validateBegin, validateEnd, validateMonitoring } = require('../validations/scheduleValidation');
 const scheduleService = require('../services/scheduleService');
+const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
-router.get('/', async function(req, res, next) {
+router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
     try {
         res.send(await scheduleService.getSchedules());
     }
@@ -12,7 +13,7 @@ router.get('/', async function(req, res, next) {
     }
 });
 
-router.post('/', async function(req, res, next) {
+router.post('/', handleRoleAuthorization(['Monitor', 'Admin']), async function(req, res, next) {
     try {
       validateWeekday(req.body.weekday);
       validateBegin(req.body.begin);
@@ -26,7 +27,7 @@ router.post('/', async function(req, res, next) {
     }
 });
 
-router.put('/:id', async function(req, res, next) {
+router.put('/:id', handleRoleAuthorization(['Monitor', 'Admin']), async function(req, res, next) {
   try {
     validateWeekday(req.body.weekday);
     validateBegin(req.body.begin);
@@ -40,7 +41,7 @@ router.put('/:id', async function(req, res, next) {
   }
 });
 
-router.delete('/:id', async function(req, res, next) {
+router.delete('/:id', handleRoleAuthorization(['Monitor', 'Admin']), async function(req, res, next) {
   try {
     res.send(await scheduleService.deleteSchedule(req.params.id));
   }

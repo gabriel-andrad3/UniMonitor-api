@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const monitoringService = require('../services/monitoringService');
 const { validateSubject, validateMonitor } = require('../validations/monitoringValidation');
+const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
-router.get('/', async function(req, res, next) {
+router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
     try {
         res.send(await monitoringService.getMonitorings());
     }
@@ -12,7 +13,7 @@ router.get('/', async function(req, res, next) {
     }
 });
 
-router.post('/', async function(req, res, next) {
+router.post('/', handleRoleAuthorization(['Professor', 'Admin']), async function(req, res, next) {
     try {
         validateSubject(req.body.subject);
         validateMonitor(req.body.monitor);
@@ -24,7 +25,7 @@ router.post('/', async function(req, res, next) {
     }
 });
 
-router.put('/:id', async function(req, res, next) {
+router.put('/:id', handleRoleAuthorization(['Professor', 'Admin']), async function(req, res, next) {
     try {
         validateSubject(req.body.subject);
         validateMonitor(req.body.monitor);
@@ -36,7 +37,7 @@ router.put('/:id', async function(req, res, next) {
     }
 });
 
-router.delete('/:id', async function(req, res, next) {
+router.delete('/:id', handleRoleAuthorization(['Professor', 'Admin']), async function(req, res, next) {
     try {
         res.send(await monitoringService.deleteMonitoring(req.params.id));
     }
