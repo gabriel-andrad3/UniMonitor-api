@@ -55,6 +55,8 @@ async function getSubjects() {
     sortById(subjects);
 
     let select = document.getElementById('subject');
+
+    select.innerHTML = '';
     
     subjects.forEach(subject => {
         let option = document.createElement('option');
@@ -74,6 +76,8 @@ async function getMonitors() {
     sortById(monitors);
 
     let select = document.getElementById('monitor');
+
+    select.innerHTML = '';
     
     monitors.forEach(monitor => {
         let option = document.createElement('option');
