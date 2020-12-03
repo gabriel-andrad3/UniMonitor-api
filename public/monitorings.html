@@ -15,13 +15,18 @@
     <title>Monitorias - UniMonitor</title>
 </head>
 <body onload="verifyRoles(['Admin', 'Professor']); getMonitorings(); hideLinks();">
-    <div class="menu">
-        <a href="/subjects.html" id="subjects-link"><h1>DISCIPLINAS</h1></a>
-        <a href="/monitorings.html" id="monitorings-link"><h1>MONITORIAS</h1></a>
-        <a href="/users.html" id="users-link"><h1>USUÁRIOS</h1></a>
-        <a href="/schedules.html" id="schedules-link"><h1>HORÁRIOS</h1></a>
-        <a href="/appointments.html" id="appointments-link"><h1>AGENDAMENTOS</h1></a>
-        <a href="/index.html" onclick="logout();"><h1>LOGOUT</h1></a>
+    <div class="header">
+        <div class="menu">
+            <a href="/subjects.html" id="subjects-link"><h1>DISCIPLINAS</h1></a>
+            <a href="/monitorings.html" id="monitorings-link"><h1>MONITORIAS</h1></a>
+            <a href="/users.html" id="users-link"><h1>USUÁRIOS</h1></a>
+            <a href="/schedules.html" id="schedules-link"><h1>HORÁRIOS</h1></a>
+            <a href="/appointments.html" id="appointments-link"><h1>AGENDAMENTOS</h1></a>
+        </div>
+        <div class="logout">
+            <span id="user-name">Olá, </span>
+            <a href="/index.html" onclick="logout();"><b>Sair</b> <i class="fas fa-sign-out-alt"></i></a>
+        </div>
     </div>
     <div class="content">
         <div class="title">

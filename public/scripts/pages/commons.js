@@ -7,7 +7,7 @@ window.onclick = function(event) {
 }
 
 function verifyRoles(roles) {
-    if (!userHasRoles(roles)) {
+    if (!localStorage.getItem('user') || !userHasRoles(roles)) {
         logout();
         window.location.href = 'index.html';
     }
@@ -29,6 +29,9 @@ function userHasRoles(roles = []) {
 }
 
 function hideLinks() {
+    let userName = document.getElementById('user-name');
+    userName.innerText = `Olá, ${getUser().name}`;
+
     let subjectsLink = document.getElementById('subjects-link');
     subjectsLink.hidden = !userHasRoles(['Admin']);
 

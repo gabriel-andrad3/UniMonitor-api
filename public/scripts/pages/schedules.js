@@ -53,10 +53,10 @@ async function showSchedules(monitoringId) {
         let row = table.insertRow();
 
         let weekdayCell = row.insertCell();
-        weekdayCell.innerHTML  = schedule.weekday;
+        weekdayCell.innerHTML  = translateWeekday(schedule.weekday); 
 
         let scheduleCell = row.insertCell();
-        scheduleCell.innerHTML  = `${schedule.begin} - ${schedule.end}`;
+        scheduleCell.innerHTML  = `${schedule.begin.split('-')[0]} - ${schedule.end.split('-')[0]}`;
 
         let actionsCell = row.insertCell();
         
