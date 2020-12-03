@@ -12,7 +12,7 @@ async function getMonitorings() {
     await getMonitors();
 
     let createButton = document.getElementById('create');
-    createButton.hidden = !userHasRoles(['Admin']);
+    createButton.hidden = !userHasRoles(['Admin', 'Professor']);
 
     table.innerHTML  = '';
 

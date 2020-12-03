@@ -52,7 +52,8 @@ async function getProfessors() {
     sortById(professors);
 
     let select = document.getElementById('professor');
-    
+    select.innerHTML = '';
+
     professors.forEach(professor => {
         let option = document.createElement('option');
 
