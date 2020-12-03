@@ -13,13 +13,14 @@
 
     <title>Agendamentos - UniMonitor</title>
 </head>
-<body onload="getAppointments(); hideLinks();">
+<body onload="verifyRoles(['Admin', 'Professor', 'Monitor', 'Student']); getAppointments(); hideLinks();">
     <div class="menu">
         <a href="/subjects.html" id="subjects-link"><h1>DISCIPLINAS</h1></a>
         <a href="/monitorings.html" id="monitorings-link"><h1>MONITORIAS</h1></a>
         <a href="/users.html" id="users-link"><h1>USUÁRIOS</h1></a>
         <a href="/schedules.html" id="schedules-link"><h1>HORÁRIOS</h1></a>
         <a href="/appointments.html" id="appointments-link"><h1>AGENDAMENTOS</h1></a>
+        <a href="/index.html" onclick="logout();"><h1>LOGOUT</h1></a>
     </div>
     <div class="content">
         <div class="title">

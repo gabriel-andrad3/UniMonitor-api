@@ -6,6 +6,18 @@ window.onclick = function(event) {
     }
 }
 
+function verifyRoles(roles) {
+    if (!userHasRoles(roles)) {
+        logout();
+        window.location.href = 'index.html';
+    }
+}
+
+function logout() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+}
+
 function getUser() {
     return JSON.parse(localStorage.getItem('user'));
 }
