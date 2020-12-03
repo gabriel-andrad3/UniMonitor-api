@@ -78,12 +78,16 @@ async function showSchedules(monitoringId) {
 async function saveSchedule() {
     let form = document.getElementById('form');
 
+    let select = document.getElementById('monitorings');
+    
+    const selectedMonitoringId = Number(select.options[select.selectedIndex].value);
+
     let schedule = {
         begin: form.elements['begin'].value,
         end: form.elements['end'].value,
         weekday: form.elements['weekday'].value,
         monitoring: {
-            id: Number(monitorings.options[monitorings.selectedIndex].value)
+            id: selectedMonitoringId
         }
     };
 
