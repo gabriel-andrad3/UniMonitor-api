@@ -9,6 +9,7 @@ async function getAppointments() {
 
     appointments = await api.appointments.get();
     sortById(appointments);
+    fixAppointmentsDateTimezone(appointments);
 
     await getMonitorings();
     await getSchedules();
@@ -45,51 +46,95 @@ async function showAppointments() {
     let select = document.getElementById('monitorings');
     let monitoringId = Number(select.options[select.selectedIndex].value);
 
-    let date = document.getElementById('date').value;
+    let monitoring = monitorings.find(x => x.id === monitoringId);
 
-    let monitoringAppointments = appointments.filter(x => x.schedule.monitoring.id === monitoringId);
-    console.log(monitoringAppointments);
-    // && (new Date(x.begin)).getDate() === new Date(date).getDate()
-    console.log(monitoringAppointments[0]);
-    console.log(new Date(monitoringAppointments[0].begin));
-    console.log(new Date(date + 'T00:00:00.000Z'));
+    let selectedDate = fixDateTimezone(new Date(document.getElementById('date').value));
 
-    let monitoringSchedulesDate = schedules.filter(x => x.monitoring.id === monitoringId && translateWeekday(x.weekday) === translateWeekdayFromIndex(new Date(date).getDay()));
-    console.log(monitoringSchedulesDate);
+    let schedulesOnSelectedDate = schedules.filter(x => x.monitoring.id === monitoringId && translateWeekday(x.weekday) === translateWeekdayFromIndex(selectedDate.getDay()));
+    let appointmentsOnSelectedDate = appointments.filter(x => x.schedule.monitoring.id === monitoringId && x.begin.toDateString() === selectedDate.toDateString()); 
+
+    let appointmentsToShow = [];
+
+    schedulesOnSelectedDate.forEach(schedule => {
+        let scheduleBeginDateParts = schedule.begin.split(':');
+
+        let scheduleBeginDate = new Date(selectedDate.getTime());
+        scheduleBeginDate.setHours(Number(scheduleBeginDateParts[0]));
+        scheduleBeginDate.setMinutes(Number(scheduleBeginDateParts[1]));
+
+        let scheduleEndDateParts = schedule.end.split(':');
+
+        let scheduleEndDate = new Date(selectedDate.getTime());
+        scheduleEndDate.setHours(Number(scheduleEndDateParts[0]));
+        scheduleEndDate.setMinutes(Number(scheduleEndDateParts[1]));
+
+        let date = new Date(scheduleBeginDate.getTime());
+
+        while (date.getTime() < scheduleEndDate.getTime()) {
+            let appointment = appointmentsOnSelectedDate.find(x => x.begin.getTime() === date.getTime());
+
+            if (appointment) {
+                appointmentsToShow.push({...appointment, avaiable: false });
+            }
+            else {
+                let begin = new Date(date.getTime());
+                let end = new Date(date.getTime());
+                end.setMinutes(end.getMinutes() + 30);
+
+                appointmentsToShow.push({
+                    schedule: schedule,
+                    begin: begin,
+                    end: end,
+                    avaiable: true
+                });
+            }
+
+            date.setMinutes(date.getMinutes() + 30);
+        }
+    })
 
     let monitor = document.getElementById('monitoring-monitor');
-    monitor.value = monitoring.monitor.name;
+
+    monitor.value = monitoring ? monitoring.monitor.name : '';
 
     let table = document.getElementById('schedules');
 
     table.innerHTML = '';
 
-    schedulesToShow.forEach(schedule => {
+    appointmentsToShow.forEach(appointment => {
         let row = table.insertRow();
 
-        let weekdayCell = row.insertCell();
-        weekdayCell.innerHTML  = schedule.weekday;
+        let appointmentCell = row.insertCell();
+        appointmentCell.innerHTML  = `${appointment.begin.toLocaleTimeString('pt-BR')} - ${appointment.end.toLocaleTimeString('pt-BR')}`;
 
-        let scheduleCell = row.insertCell();
-        scheduleCell.innerHTML  = `${schedule.begin} - ${schedule.end}`;
+        let avaiableCell = row.insertCell();
+        avaiableCell.innerHTML  = appointment.avaiable ? 'Disponível' : 'Agendada';
+
+        let studentCell = row.insertCell();
+        studentCell.innerHTML  = appointment.student ? appointment.student.name : '';
 
         let actionsCell = row.insertCell();
         
-        let editButton = document.createElement('button');
-        editButton.classList.add('icon');
-        editButton.classList.add('blue');
-        editButton.innerHTML  = '<i class="fas fa-pencil-alt"></i>';
-        editButton.onclick = () => showEditScheduleModal(schedule);
-
-        actionsCell.appendChild(editButton);
-
-        let deleteButton = document.createElement('button');
-        deleteButton.classList.add('icon');
-        deleteButton.classList.add('red');
-        deleteButton.innerHTML  = '<i class="fas fa-trash-alt"></i>';
-        deleteButton.onclick = () => deleteSchedule(schedule);
-
-        actionsCell.appendChild(deleteButton);
+        if (appointment.begin.getTime() > (new Date()).getTime()) {
+            if (appointment.avaiable && userHasRoles(['Student'])) {
+                let addButton = document.createElement('button');
+                addButton.classList.add('icon');
+                addButton.classList.add('blue');
+                addButton.innerHTML  = '<i class="fas fa-plus button-icon"></i>';
+                addButton.onclick = () => createAppointment(appointment);
+        
+                actionsCell.appendChild(addButton);
+            }
+            else if (monitoring.monitor.id === getUser().id || appointment.student.id === getUser().id) {
+                let deleteButton = document.createElement('button');
+                deleteButton.classList.add('icon');
+                deleteButton.classList.add('red');
+                deleteButton.innerHTML  = '<i class="fas fa-trash-alt"></i>';
+                deleteButton.onclick = () => deleteAppointment(appointment);
+        
+                actionsCell.appendChild(deleteButton);
+            }
+        }
     });
 }
 
@@ -126,16 +171,33 @@ async function saveSchedule() {
     }
 }
 
-async function deleteSchedule(schedule) {
+async function deleteAppointment(appointment) {
     try {
-        await api.schedules.delete(schedule.id);
-        setSuccess('Horário deletado com sucesso!');
+        await api.appointments.delete(appointment.id);
+        setSuccess('Agendamento deletado com sucesso!');
     }
     catch (error) {
         setError(error);
     }
     finally {
-        await getSchedules();
+        await getAppointments();
+    }
+}
+
+async function createAppointment(appointment) {
+    try {
+        appointment.student = {
+            id: getUser().id
+        }
+
+        await api.appointments.post(appointment);
+        setSuccess('Agendamento criado com sucesso!');
+    }
+    catch (error) {
+        setError(error);
+    }
+    finally {
+        await getAppointments();
     }
 }
 
@@ -215,4 +277,11 @@ function fillTimeSelect(select) {
             select.appendChild(option);
         })
     }
+}
+
+function fixAppointmentsDateTimezone(appointments) {
+    appointments.forEach(appointment => {
+        appointment.begin = new Date(appointment.begin);
+        appointment.end = new Date(appointment.end);
+    });
 }

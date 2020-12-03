@@ -81,7 +81,7 @@ async function saveSchedule() {
     let select = document.getElementById('monitorings');
     
     const selectedMonitoringId = Number(select.options[select.selectedIndex].value);
-
+    
     let schedule = {
         begin: form.elements['begin'].value,
         end: form.elements['end'].value,

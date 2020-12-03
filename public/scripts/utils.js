@@ -44,3 +44,8 @@ const weekdays = [
 function toTimeFormat(number) {
     return (number).toLocaleString('pt-BR', {minimumIntegerDigits: 2, useGrouping:false});
 }
+
+function fixDateTimezone(date) {
+    let userTimezoneOffset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() + userTimezoneOffset);
+}

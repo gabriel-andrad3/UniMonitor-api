@@ -18,13 +18,13 @@ async function getMonitorings() {
 
         let idCell = row.insertCell();
         idCell.innerHTML  = `<b>${monitoring.id}</b>`;
-
+        
         let subjectCell = row.insertCell();
         subjectCell.innerHTML  = monitoring.subject.name;
 
         let monitorCell = row.insertCell();
         monitorCell.innerHTML  = monitoring.monitor.name;
-
+        
         let actionsCell = row.insertCell();
         
         let editButton = document.createElement('button');

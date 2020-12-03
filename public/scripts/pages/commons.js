@@ -6,10 +6,12 @@ window.onclick = function(event) {
     }
 }
 
-function userHasRoles([roles]) {
-    let userInfo = JSON.parse(localStorage.getItem('user'));
+function getUser() {
+    return JSON.parse(localStorage.getItem('user'));
+}
 
-    let existentRoles = userInfo.roles.filter(role => roles.includes(role.name));
+function userHasRoles([roles]) {
+    let existentRoles = getUser().roles.filter(role => roles.includes(role.name));
 
     return existentRoles.length !== 0;
 }
