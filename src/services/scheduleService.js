@@ -25,6 +25,13 @@ async function createSchedule(weekday, begin, end, monitoring) {
         throw new Conflict(`monitoria com id ${monitoring.id} não existe`);
     }
 
+    const schedules = await getSchedules();
+    const equalSchedule = schedules.find(schedule => (schedule.weekday == weekday) && (schedule.begin == begin) && (schedule.end == end));
+    
+    if (equalSchedule) {
+        throw new Conflict(`horário já cadastrado`);
+    }
+
     return await scheduleRepository.insertSchedule(new Schedule(weekday, begin, end, existentMonitoring));
 }
 
