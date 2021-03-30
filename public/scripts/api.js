@@ -1,5 +1,5 @@
 const _client = axios.create({
-    baseURL: 'http://localhost:3000/api/',
+    baseURL: 'https://qdnpbkj6r1.execute-api.sa-east-1.amazonaws.com/prod/api',
     headers: {
         'Content-Type': 'application/json'
     }
