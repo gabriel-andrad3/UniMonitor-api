@@ -1,4 +1,4 @@
-CREATE TABLE "role" (
+CREATE TABLE public."role" (
 	id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,
 	"name" bpchar(50) NOT NULL,
     CONSTRAINT role_pk PRIMARY KEY (id)
@@ -41,7 +41,7 @@ CREATE TABLE public.monitoring (
 	CONSTRAINT monitoring_fk_monitor FOREIGN KEY (monitor_id) REFERENCES public."user"(id)
 );
 
-CREATE TABLE public.schedule (
+create table public.schedule (
 	id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,
 	weekday bpchar(20) NOT NULL,
 	"begin" timetz(6) NOT NULL,
