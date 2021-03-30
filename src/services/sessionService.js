@@ -10,7 +10,7 @@ async function createSession(register, password) {
     if (!result.user)
         throw new Unauthorized(`usuário e/ou senha inválido(s)`);
 
-    let isValid = await bcrypt.compare(password, result.passwordHash);
+    let isValid = await bcrypt.compare(password, result.passwordHash.trim());
 
     if (!isValid)
         throw new Unauthorized(`usuário e/ou senha inválido(s)`);
