@@ -27,6 +27,6 @@ coverage
 benchmarks/graphs
 
 .env
-.env.local
+.env.prod
 
 .serverless

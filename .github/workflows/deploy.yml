@@ -15,12 +15,27 @@ jobs:
         node-version: [14.x]
     steps:
       - uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+
       - name: Run npm install
         run: npm install
+
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          file_name: .env
+
+          envkey_DB_USER: ${{ secrets.DB_USER }}
+          envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          envkey_DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          envkey_DB_HOST: ${{ secrets.DB_HOST }}
+          envkey_DB_PORT: ${{ secrets.DB_PORT }}
+          envkey_APP_SECRET: ${{ secrets.APP_SECRET }}
+          
       - name: Serverless Deploy
         uses: serverless/github-action@master
         with:

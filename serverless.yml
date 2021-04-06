@@ -1,5 +1,7 @@
 service: unimonitor-api
 
+useDotenv: false
+
 provider:
   name: aws
   runtime: nodejs14.x

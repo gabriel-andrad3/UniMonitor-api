@@ -1,5 +1,7 @@
+const baseURL = window.location.origin.includes('localhost') ? window.location.origin + '/api' : window.location.origin + '/prod/api';
+
 const _client = axios.create({
-    baseURL: 'https://qdnpbkj6r1.execute-api.sa-east-1.amazonaws.com/prod/api',
+    baseURL: baseURL,
     headers: {
         'Content-Type': 'application/json'
     }

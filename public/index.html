@@ -12,6 +12,10 @@
     <script src="scripts/pages/index.js"></script>
     <link rel="stylesheet" href="stylesheets/style.css">
 
+    <script type="text/javascript">
+        document.head.innerHTML = document.head.innerHTML + "<base href='" + (window.location.origin.includes('localhost') ? window.location.origin : window.location.origin + '/prod/') + "' />";
+    </script>
+
     <title>Login - UniMonitor</title>
 </head>
 <body class="login-body">
