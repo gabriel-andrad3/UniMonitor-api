@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const { Unauthorized } = require('../utils/errors');
 
 function validateRegister(register) {
@@ -22,7 +23,30 @@ function validatePassword(password) {
     }
 }
 
+async function validateMicrosoftToken(authorization) {
+    if (!authorization)
+        throw new Unauthorized('token não informado');
+
+    const parts = authorization.split(' ');
+
+    if (!parts.length === 2)
+        throw new Unauthorized('token inválido');
+
+    const [ bearer, token ] = parts;
+
+    if (!/^Bearer$/i.test(bearer))
+        throw new Unauthorized('token inválido');
+
+    const decoded = jwt.decode(token);
+
+    if (!decoded.upn.endsWith('@puccampinas.edu.br'))
+        throw new Unauthorized('token inválido');
+    
+    // TODO: validar chaves e issuer
+}
+
 module.exports = {
     validateRegister,
-    validatePassword
+    validatePassword,
+    validateMicrosoftToken
 }

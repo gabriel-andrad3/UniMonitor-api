@@ -1,4 +1,3 @@
-const { PayloadTooLarge } = require('http-errors');
 const pool = require('../../config/database');
 const { Role, User } = require('../models');
 
@@ -6,6 +5,7 @@ const selectQuery = `select
                         u.id as user_id, 
                         u."name" as user_name, 
                         u.register as user_register, 
+                        u.email as user_email,
                         r.id as role_id, 
                         r."name" as role_name 
                     from 
@@ -31,6 +31,14 @@ async function getUserById(id) {
 
 async function getUserByRegister(register) {
     let query = `${selectQuery} where u.register = '${register}'`;
+
+    let result = await pool.query(query);
+
+    return resultToUser(result);
+}
+
+async function getUserByEmail(email) {
+    let query = `${selectQuery} where u.email = '${email}'`;
 
     let result = await pool.query(query);
 
@@ -123,7 +131,7 @@ function resultToUsers(result) {
         let user = acc.find(reg => reg.id == row.user_id);
 
         if (!user) {
-            user = new User(row.user_name.trim(), row.user_register.trim(), [], row.user_id);
+            user = new User(row.user_name.trim(), row.user_register.trim(), [], row.user_email, row.user_id);
 
             acc.push(user);
         }
@@ -140,6 +148,7 @@ module.exports = {
     getUsers,
     getUserById,
     getUserByRegister,
+    getUserByEmail,
     getUserAndPasswordByRegister,
     insertUser,
     updateUser

@@ -20,6 +20,22 @@ async function createSession(register, password) {
     return { token: token };
 }
 
+async function createSessionUsingMicrosoftToken(authorization) {
+    const [ bearer, token ] = authorization.split(' ');
+
+    const decodedToken = jwt.decode(token);
+    
+    let user = await userRepository.getUserByEmail(decodedToken.upn);
+
+    if (!user)
+        throw new Unauthorized(`usuário não está pré cadastrado`);
+
+    const newToken = jwt.sign({ ...user }, config.appSecret);
+
+    return { token: newToken };
+}
+
 module.exports = {
-    createSession
+    createSession,
+    createSessionUsingMicrosoftToken
 }
