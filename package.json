@@ -18,7 +18,9 @@
     "jwks-rsa": "^2.0.2",
     "morgan": "~1.9.1",
     "node-fetch": "^2.6.1",
-    "pg": "^8.4.0",
+    "pg": "^8.6.0",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.6.2",
     "serverless-http": "^2.7.0"
   },
   "devDependencies": {
