@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.4",
+    "sequelize-cli": "^6.2.0",
     "serverless-offline": "^6.9.0"
   }
 }
