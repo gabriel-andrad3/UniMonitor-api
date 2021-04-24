@@ -17,7 +17,7 @@ async function getAppointments() {
         return [];
 
     return result.rows.map(row => {
-        let student = new User(null, null, null, row.appointment_student_id);
+        let student = new User(null, null, null, null, row.appointment_student_id);
         let schedule = new Schedule(null, null, null, null, row.appointment_schedule_id);
 
         return new Appointment(row.appointment_begin, row.appointment_end, student, schedule, row.appointment_id);
@@ -32,7 +32,7 @@ async function getAppointmentById(id) {
     if (result.rowCount == 0)
         return null;
 
-    let student = new User(null, null, null, result.rows[0].appointment_student_id);
+    let student = new User(null, null, null, null, result.rows[0].appointment_student_id);
     let schedule = new Schedule(null, null, null, result.rows[0].appointment_schedule_id);
 
     return new Appointment(result.rows[0].appointment_begin, result.rows[0].appointment_end, student, schedule, result.rows[0].appointment_id);

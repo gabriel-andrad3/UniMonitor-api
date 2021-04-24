@@ -18,7 +18,7 @@ async function getSchedules() {
         return [];
 
     return result.rows.map(row => {
-        let monitoring = new User(null, null, null, row.schedule_monitoring_id);
+        let monitoring = new User(null, null, null, null, row.schedule_monitoring_id);
 
         return new Schedule(row.schedule_weekday.trim(), row.schedule_begin, row.schedule_end, monitoring, row.schedule_id);
     });

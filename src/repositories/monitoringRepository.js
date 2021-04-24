@@ -16,7 +16,7 @@ async function getMonitorings() {
 
     return result.rows.map(row => {
         let subject = new Subject(null, null, null, row.subject_id);
-        let monitor = new User (null, null, null, row.monitor_id);        
+        let monitor = new User (null, null, null, null, row.monitor_id);        
 
         return new Monitoring(subject, monitor, row.monitoring_id);
     }); 
@@ -31,7 +31,7 @@ async function getMonitoringById(id) {
         return null;
 
     let subject = new Subject(null, null, null, result.rows[0].subject_id);
-    let monitor = new User (null, null, null, result.rows[0].monitor_id);        
+    let monitor = new User (null, null, null, null, result.rows[0].monitor_id);        
 
     return new Monitoring(subject, monitor, result.rows[0].monitoring_id); 
 }

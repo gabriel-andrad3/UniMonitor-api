@@ -33,6 +33,8 @@ function handleRoleAuthorization(roles = []) {
                 throw new Forbidden('token sem as permissões necessárias');
         }
 
+        req.user = decoded;
+
         next();
     }
 }

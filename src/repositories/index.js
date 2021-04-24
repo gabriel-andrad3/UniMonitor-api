@@ -1,15 +1,17 @@
+const appointmentRepository = require('./appointmentRepository');
+const monitoringRepository = require('./monitoringRepository');
+const noticeRepository = require('./noticeRepository');
 const roleRepository = require('./roleRepository');
+const scheduleRepository = require('./scheduleRepository');
 const subjectRepository = require('./subjectRepository');
 const userRepository = require('./userRepository');
-const monitoringRepository = require('./monitoringRepository');
-const appointmentRepository = require('./appointmentRepository');
-const scheduleRepository = require('./scheduleRepository');
 
 module.exports = {
+    appointmentRepository,
+    monitoringRepository,
+    noticeRepository,
     roleRepository, 
+    scheduleRepository,
     subjectRepository,
     userRepository,
-    monitoringRepository,
-    scheduleRepository,
-    appointmentRepository
 }

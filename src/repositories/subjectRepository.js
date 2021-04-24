@@ -16,7 +16,7 @@ async function getSubjects() {
         return [];
 
     return result.rows.map(row => {
-        let professor = new User(null, null, null, row.subject_professor_id);
+        let professor = new User(null, null, null, null, row.subject_professor_id);
 
         return new Subject(row.subject_name.trim(), row.subject_workload, professor, row.subject_id);
     });
@@ -30,7 +30,7 @@ async function getSubjectById(id) {
     if (result.rowCount == 0)
         return null;
 
-    let professor = new User(null, null, null, result.rows[0].subject_professor_id);
+    let professor = new User(null, null, null, null, result.rows[0].subject_professor_id);
 
     return new Subject(result.rows[0].subject_name.trim(), result.rows[0].subject_workload, professor, result.rows[0].subject_id);
 }
