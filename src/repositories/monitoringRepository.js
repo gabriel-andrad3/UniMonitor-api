@@ -36,6 +36,20 @@ async function getMonitoringById(id) {
     return new Monitoring(subject, monitor, result.rows[0].monitoring_id); 
 }
 
+async function getMonitoringBySubjectId(subjectId) {
+    let query = `${selectQuery} where m.subject_id = ${subjectId}`;
+    
+    let result = await pool.query(query);
+
+    if (result.rowCount == 0)
+        return null;
+
+    let subject = new Subject(null, null, null, result.rows[0].subject_id);
+    let monitor = new User (null, null, null, null, result.rows[0].monitor_id);        
+
+    return new Monitoring(subject, monitor, result.rows[0].monitoring_id); 
+}
+
 async function insertMonitoring(monitoring) {
     const insertQuery = `insert into monitoring 
                             (subject_id, monitor_id) 
@@ -72,6 +86,7 @@ async function deleteMonitoring(id) {
 module.exports = {
     getMonitorings,
     getMonitoringById,
+    getMonitoringBySubjectId,
     insertMonitoring,
     updateMonitoring,
     deleteMonitoring

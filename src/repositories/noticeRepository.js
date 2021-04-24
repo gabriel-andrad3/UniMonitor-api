@@ -29,9 +29,24 @@ async function getNotices(userId) {
         let author = new User(null, null, null, null, row.author_id);
 
         return new Notice(row.notice_title.trim(), row.notice_body.trim(), row.notice_post_date, author, subject, row.notice_id);
-    })
+    });
+}
+
+async function createNotice(notice) {
+    const insertQuery = `insert into notice 
+                            (title, body, author_id, "date", subject_id)
+                        values 
+                            ('${notice.title}', '${notice.body}', ${notice.author.id}, '${notice.date}', ${notice.subject.id}) 
+                        returning id`;
+    
+    let result = await pool.query(insertQuery);
+    
+    notice.id = result.rows[0].id;
+
+    return notice;
 }
 
 module.exports = {
-    getNotices
+    getNotices,
+    createNotice
 }

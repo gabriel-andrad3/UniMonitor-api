@@ -1,7 +1,9 @@
-const { noticeRepository, userRepository, subjectRepository } = require('../repositories');
+const { Notice } = require('../models');
+const { noticeRepository, userRepository, subjectRepository, monitoringRepository } = require('../repositories');
+const { Conflict } = require('../utils/errors');
 
-async function getNotices(user) {
-    const notices = await noticeRepository.getNotices(user.id);
+async function getNotices(userId) {
+    const notices = await noticeRepository.getNotices(userId);
 
     for (let notice of notices) {
         notice.author = await userRepository.getUserById(notice.author.id);
@@ -18,6 +20,32 @@ async function getNotices(user) {
     return notices;
 }
 
+async function createNotice(title, body, subjectId, userId) {
+    const subject = await subjectRepository.getSubjectById(subjectId);
+
+    if (!subject) {
+        throw new NotFound(`disciplina com id ${subjectId} não existe`);
+    }
+
+    const isProfessor = subject.professor.id === userId;
+    let isMonitor = false;
+
+    if (!isProfessor) {
+        const monitoring = await monitoringRepository.getMonitoringBySubjectId(subject.id);
+
+        isMonitor = monitoring ? monitoring.monitor.id === userId : false;
+    }
+
+    if (!(isProfessor || isMonitor)) {
+        throw new Conflict(`usuário não é monitor nem professor da disciplina com id ${subjectId}`);
+    }
+
+    const author = await userRepository.getUserById(userId);
+
+    return await noticeRepository.createNotice(new Notice(title, body, new Date().toUTCString(), author, subject));
+}
+
 module.exports = {
     getNotices,
+    createNotice,
 }
