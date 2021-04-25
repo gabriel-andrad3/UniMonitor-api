@@ -28,7 +28,7 @@ async function getNotices(userId) {
         let subject = new Subject(null, null, null, row.subject_id);
         let author = new User(null, null, null, null, row.author_id);
 
-        return new Notice(row.notice_title.trim(), row.notice_body.trim(), row.notice_post_date, author, subject, row.notice_id);
+        return new Notice(row.notice_title.trim(), row.notice_body.trim(), new Date(row.notice_post_date), author, subject, row.notice_id);
     });
 }
 

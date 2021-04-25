@@ -1,4 +1,4 @@
-const { Notice } = require('../models');
+const { Notice, NoticeBoardWeekday } = require('../models');
 const { noticeRepository, userRepository, subjectRepository, monitoringRepository } = require('../repositories');
 const { Conflict } = require('../utils/errors');
 
@@ -17,7 +17,23 @@ async function getNotices(userId) {
         }
     }
 
-    return notices;
+    const groupedNotices = notices.reduce((acc, notice) => {
+        const noticeBoardWeekday = acc.find(x => x.date.toDateString() === notice.date.toDateString());
+
+        if (noticeBoardWeekday) {
+            noticeBoardWeekday.notices.push(notice);
+        }
+        else {
+            let date = new Date(notice.date.getTime());
+            date.setHours(0, 0, 0, 0);
+
+            acc.push(new NoticeBoardWeekday(notice.date.getDay(), date, [notice]));
+        }
+
+        return acc;
+    }, [])
+
+    return groupedNotices;
 }
 
 async function createNotice(title, body, subjectId, userId) {
