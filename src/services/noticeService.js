@@ -13,7 +13,7 @@ async function getNotices(userId) {
             notice.subject.professor = notice.author;
         }
         else {
-            notice.subject.professor = await notice.userRepository.getUserById(notice.subject.professor.id);
+            notice.subject.professor = await userRepository.getUserById(notice.subject.professor.id);
         }
     }
 
