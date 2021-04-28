@@ -39,7 +39,7 @@ async function validateMicrosoftToken(authorization) {
 
     const decoded = jwt.decode(token);
 
-    if (!decoded.upn.endsWith('@puccampinas.edu.br'))
+    if (!(decoded.upn.endsWith('@puccampinas.edu.br') || decoded.upn.endsWith('@puc-campinas.edu.br')))
         throw new Unauthorized('token inválido');
     
     // TODO: validar chaves e issuer
