@@ -1,6 +1,6 @@
 const { Notice, NoticeBoardWeekday } = require('../models');
 const { noticeRepository, userRepository, subjectRepository, monitoringRepository } = require('../repositories');
-const { Conflict } = require('../utils/errors');
+const { Conflict, Forbidden } = require('../utils/errors');
 
 async function getNotices(userId) {
     const notices = await noticeRepository.getNotices(userId);
@@ -53,7 +53,7 @@ async function createNotice(title, body, subjectId, userId) {
     }
 
     if (!(isProfessor || isMonitor)) {
-        throw new Conflict(`usuário não é monitor nem professor da disciplina com id ${subjectId}`);
+        throw new Forbidden(`usuário não é monitor nem professor da disciplina com id ${subjectId}`);
     }
 
     const author = await userRepository.getUserById(userId);

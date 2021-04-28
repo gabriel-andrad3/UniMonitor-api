@@ -22,6 +22,39 @@ async function getSubjects() {
     });
 }
 
+async function getSubjectsByProfessorId(professorId) {
+    const query = selectQuery + ` where professor_id = ${professorId}`;
+
+    let result = await pool.query(query);
+
+    if (result.rowCount == 0)
+        return [];
+
+    return result.rows.map(row => {
+        let professor = new User(null, null, null, null, row.subject_professor_id);
+
+        return new Subject(row.subject_name.trim(), row.subject_workload, professor, row.subject_id);
+    });
+}
+
+async function getSubjectsByMonitorId(monitorId) {
+    const query = selectQuery + `
+            inner join monitoring m on s.id = m.subject_id
+        where
+            m.monitor_id = ${monitorId}`;
+
+    let result = await pool.query(query);
+
+    if (result.rowCount == 0)
+        return [];
+
+    return result.rows.map(row => {
+        let professor = new User(null, null, null, null, row.subject_professor_id);
+
+        return new Subject(row.subject_name.trim(), row.subject_workload, professor, row.subject_id);
+    });
+}
+
 async function getSubjectById(id) {
     let query = `${selectQuery} where s.id = ${id}`;
 
@@ -72,6 +105,8 @@ async function deleteSubject(subject) {
 
 module.exports = {
     getSubjects,
+    getSubjectsByProfessorId,
+    getSubjectsByMonitorId,
     getSubjectById,
     insertSubject,
     updateSubject,

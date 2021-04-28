@@ -3,8 +3,20 @@ const { subjectRepository, userRepository } = require('../repositories');
 const { NotFound, Conflict } = require('../utils/errors');
 const monitoringService = require('./monitoringService');
 
-async function getSubjects() {
-    let subjects = await subjectRepository.getSubjects();
+async function getSubjects(userId) {
+    let subjects = []
+
+    if (userId) {
+        subjects.push(...await subjectRepository.getSubjectsByProfessorId(userId));
+        subjects.push(...await subjectRepository.getSubjectsByMonitorId(userId));
+    }
+    else {
+        subjects = await subjectRepository.getSubjects();
+    }
+
+    if (subjects.length === 0) {
+        return [];
+    }
 
     for (let subject of subjects) {
         if (subject.professor.id) {
