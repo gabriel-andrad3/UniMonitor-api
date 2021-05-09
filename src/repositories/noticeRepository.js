@@ -17,6 +17,7 @@ async function getNotices(userId) {
         where 
             n.author_id = ${userId} or 
             e.student_id = ${userId}
+        group by notice_id
         `
 
     const result = await pool.query(selectQuery);
