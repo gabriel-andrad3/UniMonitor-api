@@ -36,11 +36,13 @@ async function getSchedulesByDate(begin, end, userId) {
 
     const dateCount = new Date(beginDate);
 
-    while (dateCount < endDate) {
+    while (dateCount <= endDate) {
+        console.log(dateCount)
+
         const schedulesWeekday = schedules.filter(schedule => schedule.weekday === dateCount.getDay());
 
         if (schedulesWeekday.length > 0) {
-            const date = new Date(dateCount.getTime())
+            const date = new Date(dateCount);
             date.setHours(0, 0, 0 ,0);
 
             const groupedSchedule =  {
@@ -66,7 +68,8 @@ async function getSchedulesByDate(begin, end, userId) {
                     const end = new Date(begin);
                     end.setMinutes(end.getMinutes() + 30);
 
-                    const bookedAppointment = bookedAppointments.find(x => x.begin === begin && x.end === end);
+                    const bookedAppointment = bookedAppointments.find(
+                        x => new Date(x.begin).getTime() === begin.getTime() && new Date(x.end).getTime() === end.getTime());
 
                     let status = begin < new Date() ? 'available' : 'past'; 
 
