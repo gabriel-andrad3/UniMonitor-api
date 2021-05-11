@@ -3,8 +3,14 @@ const { monitoringRepository, subjectRepository, userRepository } = require('../
 const { Conflict, NotFound } = require('../utils/errors');
 const scheduleService = require('./scheduleService');
 
-async function getMonitorings() {
-    let monitorings = await monitoringRepository.getMonitorings();
+async function getMonitorings(monitorId) {
+    let monitorings = [];
+
+    if (monitorId) {
+        monitorings = await monitoringRepository.getMonitoringsByMonitorId(monitorId);
+    } else {
+        monitorings = await monitoringRepository.getMonitorings();
+    }    
 
     for (let monitoring of monitorings) {
         if (monitoring.subject.id) {            

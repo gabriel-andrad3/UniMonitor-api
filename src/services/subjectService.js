@@ -4,7 +4,7 @@ const { NotFound, Conflict } = require('../utils/errors');
 const monitoringService = require('./monitoringService');
 
 async function getSubjects(userId) {
-    let subjects = []
+    let subjects = [];
 
     if (userId) {
         subjects.push(...await subjectRepository.getSubjectsByProfessorId(userId));
