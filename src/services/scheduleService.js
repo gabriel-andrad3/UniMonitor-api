@@ -6,12 +6,38 @@ const appointmentService = require('./appointmentService');
 async function getSchedules() {
     let schedules = await scheduleRepository.getSchedules();
 
+    for (let schedule of schedules) {
+        if (schedule.monitoring.id) {
+            schedule.monitoring = await monitoringRepository.getMonitoringById(schedule.monitoring.id);
+            schedule.monitoring.subject = await subjectRepository.getSubjectById(schedule.monitoring.subject.id);
+            schedule.monitoring.monitor = await userRepository.getUserById(schedule.monitoring.monitor.id);
+        }
+    }
+
+    return schedules;
+}
+
+async function getSchedulesByDate(begin, end, userId) {
+    const beginDate = new Date(begin);
+    const endDate = new Date(end);
+
+    let schedules = await scheduleRepository.getSchedulesByUserId(userId);
 
     for (let schedule of schedules) {
         if (schedule.monitoring.id) {
             schedule.monitoring = await monitoringRepository.getMonitoringById(schedule.monitoring.id);
             schedule.monitoring.subject = await subjectRepository.getSubjectById(schedule.monitoring.subject.id);
             schedule.monitoring.monitor = await userRepository.getUserById(schedule.monitoring.monitor.id);
+        }
+    }
+
+    const dateCount = new Date(beginDate);
+
+    while (dateCount < endDate) {
+        const schedulesWeekday = schedules.filter(schedule => schedule.weekday === dateCount.getDay());
+
+        if (schedulesWeekday.length() > 0) {
+            
         }
     }
 
@@ -70,6 +96,7 @@ async function deleteSchedule(id) {
 
 module.exports = {
     getSchedules,
+    getSchedulesByDate,
     createSchedule,
     updateSchedule,
     deleteSchedule

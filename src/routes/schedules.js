@@ -5,8 +5,19 @@ const scheduleService = require('../services/scheduleService');
 const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
 router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
+  try {
+      res.send(await scheduleService.getSchedules(beginDate, endDate));
+  }
+  catch (error) {
+      next(error);
+  }
+});
+
+router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
     try {
-        res.send(await scheduleService.getSchedules());
+      validateTime(req.query.begin, req.query.end);
+
+      res.send(await scheduleService.getSchedulesByDate(begin, end, req.user.id));
     }
     catch (error) {
         next(error);
