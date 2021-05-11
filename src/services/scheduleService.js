@@ -52,7 +52,7 @@ async function getSchedulesByDate(begin, end, userId) {
             date.setHours(0, 0, 0 ,0);
 
             const groupedSchedule =  {
-                date: date,
+                date: date.toString().replace('Z', ''),
                 schedules: []
             }
 
@@ -84,10 +84,19 @@ async function getSchedulesByDate(begin, end, userId) {
                             status = bookedAppointment.student.id === userId ? 'booked' : 'unavailable';
                         }
 
-                        appointments.push({...bookedAppointment, status: status, schedule: null });
+                        appointments.push({
+                            ...bookedAppointment, 
+                            begin: bookedAppointment.begin.toString().replace('Z', ''), 
+                            end: bookedAppointment.end.toString().replace('Z', ''), 
+                            status: status, 
+                            schedule: null });
                     }
                     else {
-                        appointments.push({ begin: begin, end: end, status: status, student: null });
+                        appointments.push({ 
+                            begin: begin.toString().replace('Z', ''), 
+                            end: end.toString().replace('Z', ''), 
+                            status: status, 
+                            student: null });
                     }
 
                     timeCount.setMinutes(timeCount.getMinutes() + 30, 0, 0);
