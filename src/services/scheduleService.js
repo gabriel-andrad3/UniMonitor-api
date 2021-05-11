@@ -1,5 +1,6 @@
+const { Appointment } = require('../models');
 const Schedule = require('../models/Schedule');
-const { scheduleRepository, monitoringRepository, subjectRepository, userRepository } = require('../repositories');
+const { scheduleRepository, monitoringRepository, subjectRepository, userRepository, appointmentRepository } = require('../repositories');
 const { NotFound, Conflict } = require('../utils/errors');
 const appointmentService = require('./appointmentService');
 
@@ -21,6 +22,107 @@ async function getSchedules(monitoringId) {
     }
 
     return schedules;
+}
+
+async function getSchedulesByDate(begin, end, userId) {   
+    const beginDate = new Date(begin);
+    const endDate = new Date(end);
+
+    let schedules = await scheduleRepository.getSchedulesByUserId(userId);
+
+    for (let schedule of schedules) {
+        if (schedule.monitoring.id) {
+            schedule.monitoring = await monitoringRepository.getMonitoringById(schedule.monitoring.id);
+            schedule.monitoring.subject = await subjectRepository.getSubjectById(schedule.monitoring.subject.id);
+            schedule.monitoring.monitor = await userRepository.getUserById(schedule.monitoring.monitor.id);
+        }
+    }
+
+    const groupedSchedules = [];
+
+    const dateCount = new Date(beginDate);
+
+    while (dateCount < endDate) {
+        const schedulesWeekday = schedules.filter(schedule => schedule.weekday === dateCount.getDay());
+
+        if (schedulesWeekday.length > 0) {
+            const date = new Date(dateCount.getTime())
+            date.setHours(0, 0, 0 ,0);
+
+            const groupedSchedule =  {
+                date: date,
+                schedules: []
+            }
+
+            for (const schedule of schedulesWeekday) {
+                const timeCount = new Date(dateCount);
+                const beginParts = schedule.begin.split(':');
+                timeCount.setHours(beginParts[0], beginParts[1], 0, 0);
+
+                const scheduleEnd = new Date(dateCount);
+                const endParts = schedule.end.split(':');
+                scheduleEnd.setHours(endParts[0], endParts[1], 0, 0);
+
+                const appointments = [];
+
+                const bookedAppointments = await appointmentRepository.getAppointmentsByScheduleId(schedule.id);
+
+                while (timeCount < scheduleEnd) {
+                    const begin = new Date(timeCount);
+                    const end = new Date(begin);
+                    end.setMinutes(end.getMinutes() + 30);
+
+                    const bookedAppointment = bookedAppointments.find(x => x.begin === begin && x.end === end);
+
+                    let status = begin < new Date() ? 'available' : 'past'; 
+
+                    if (bookedAppointment) {
+                        if (status !== 'past') {
+                            status = bookedAppointment.student.id === userId ? 'booked' : 'unavailable';
+                        }
+
+                        appointments.push({...bookedAppointment, status: status, schedule: null });
+                    }
+                    else {
+                        appointments.push({ begin: begin, end: end, status: status, student: null });
+                    }
+
+                    timeCount.setMinutes(timeCount.getMinutes() + 30, 0, 0);
+                }
+
+                const availableAppointmentsCount = appointments.filter(x => x.status === 'available').length;
+                const bookedAppointmentsCount = appointments.filter(x => x.status === 'booked').length;
+                const pastAppointmentsCount = appointments.filter(x => x.status === 'past').length;
+
+                let scheduleStatus = '';
+
+                if (availableAppointmentsCount > 0) {
+                    scheduleStatus = 'available';
+                }
+                else {
+                    scheduleStatus = 'unavailable';
+                }
+
+                if (bookedAppointmentsCount > 0) {
+                    scheduleStatus = 'booked';
+                }
+
+                if (pastAppointmentsCount > 0) {
+                    scheduleStatus = 'past';
+                }
+
+                schedule.appointments = appointments;
+
+                groupedSchedule.schedules.push({...schedule, status: scheduleStatus})
+            }
+
+            groupedSchedules.push(groupedSchedule);
+        }
+
+        dateCount.setDate(dateCount.getDate() + 1);
+    }
+
+    return groupedSchedules;
 }
 
 async function createSchedule(weekday, begin, end, monitoring) {
@@ -75,6 +177,7 @@ async function deleteSchedule(id) {
 
 module.exports = {
     getSchedules,
+    getSchedulesByDate,
     createSchedule,
     updateSchedule,
     deleteSchedule

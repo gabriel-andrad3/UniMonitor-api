@@ -24,6 +24,24 @@ async function getAppointments() {
     })
 }
 
+async function getAppointmentsByScheduleId(scheduleId) {
+    const query = selectQuery + `
+        where a.schedule_id = ${scheduleId}
+    `;
+
+    let result = await pool.query(query);
+
+    if (result.rowCount == 0)
+        return [];
+
+    return result.rows.map(row => {
+        let student = new User(null, null, null, null, row.appointment_student_id);
+        let schedule = new Schedule(null, null, null, null, row.appointment_schedule_id);
+
+        return new Appointment(row.appointment_begin, row.appointment_end, student, schedule, row.appointment_id);
+    })
+}
+
 async function getAppointmentById(id) {
     let query = `${selectQuery} where a.id = ${id}`;
     
@@ -75,6 +93,7 @@ async function deleteAppointment(id) {
 
 module.exports = {
     getAppointments, 
+    getAppointmentsByScheduleId,
     getAppointmentById,
     insertAppointment,  
     updateAppointment,

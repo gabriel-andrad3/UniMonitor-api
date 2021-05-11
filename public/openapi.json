@@ -1,0 +1,283 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger Unimonitor",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://qdnpbkj6r1.execute-api.sa-east-1.amazonaws.com/prod/api"
+    },
+    {
+      "url": "http://qdnpbkj6r1.execute-api.sa-east-1.amazonaws.com/prod/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Notices"
+    },
+    {
+      "name": "Sessions"
+    },
+    {
+      "name": "Subjects"
+    }
+  ],
+  "paths": {
+    "/notices": {
+      "get": {
+        "tags": [
+          "Notices"
+        ],
+        "summary": "Find all notices related to the user",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Notice"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized operation",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Notices"
+        ],
+        "summary": "Create a notice with the user as author",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "subjectId": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Notice"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid notice",
+            "content": {}
+          },
+          "401": {
+            "description": "unauthorized operation",
+            "content": {}
+          },
+          "403": {
+            "description": "forbidden operation",
+            "content": {}
+          },
+          "404": {
+            "description": "subject not found",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/sessions/microsoft": {
+      "post": {
+        "security": [
+          {
+            "microsoftToken": []
+          }
+        ],
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Create a session with the user Microsoft AD token",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized operation",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/subjects": {
+      "get": {
+        "tags": [
+          "Subjects"
+        ],
+        "summary": "Find all subjects related to the user",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "userId",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Subject"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized operation",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "unimonitorToken": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "unimonitorToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "microsoftToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Notice": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "author": {
+            "$ref": "#/components/schemas/User"
+          },
+          "subject": {
+            "$ref": "#/components/schemas/Subject"
+          }
+        }
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Subject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "workload": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "professor": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "register": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          }
+        }
+      }
+    }
+  }
+}
