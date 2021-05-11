@@ -3,9 +3,14 @@ const { scheduleRepository, monitoringRepository, subjectRepository, userReposit
 const { NotFound, Conflict } = require('../utils/errors');
 const appointmentService = require('./appointmentService');
 
-async function getSchedules() {
-    let schedules = await scheduleRepository.getSchedules();
-
+async function getSchedules(monitoringId) {
+    let schedules = []; 
+    
+    if (monitoringId) {
+        schedules = await scheduleRepository.getSchedulesByMonitoringId(monitoringId);
+    } else {
+        schedules = await scheduleRepository.getSchedules();
+    }    
 
     for (let schedule of schedules) {
         if (schedule.monitoring.id) {

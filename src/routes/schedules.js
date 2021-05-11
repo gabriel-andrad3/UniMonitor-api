@@ -6,7 +6,7 @@ const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
 router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
     try {
-        res.send(await scheduleService.getSchedules());
+        res.send(await scheduleService.getSchedules(req.query.monitoringId));
     }
     catch (error) {
         next(error);
