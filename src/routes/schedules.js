@@ -6,22 +6,16 @@ const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
 router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
   try {
-      res.send(await scheduleService.getSchedules(beginDate, endDate));
+    if (req.query.begin && req.query.end) {
+      res.send(await scheduleService.getSchedulesByDate(req.query.begin, req.query.end, req.user.id));
+    }
+    else {
+      res.send(await scheduleService.getSchedules());
+    }
   }
   catch (error) {
       next(error);
   }
-});
-
-router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
-    try {
-      validateTime(req.query.begin, req.query.end);
-
-      res.send(await scheduleService.getSchedulesByDate(begin, end, req.user.id));
-    }
-    catch (error) {
-        next(error);
-    }
 });
 
 router.post('/', handleRoleAuthorization(['Monitor', 'Admin']), async function(req, res, next) {

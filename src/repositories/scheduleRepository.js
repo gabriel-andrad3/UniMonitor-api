@@ -47,12 +47,14 @@ async function getSchedules() {
 async function getSchedulesByUserId(userId) {
     const query = selectQuery + `
             inner join "monitoring" m on s.monitoring_id = m.id
-            inner join "subject" s on s.id = m.subject_id
+            inner join "subject" su on su.id = m.subject_id
             inner join "enrollment" e on e.subject_id =  m.subject_id
         where
-            s.professor_id = ${userId} OR
+            su.professor_id = ${userId} OR
             e.student_id = ${userId}
+        group by schedule_id
     `
+    
     let result = await pool.query(query);
 
     if (result.rowCount == 0)
