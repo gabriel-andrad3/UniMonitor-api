@@ -77,7 +77,7 @@ async function getSchedulesByDate(begin, end, userId) {
                     const bookedAppointment = bookedAppointments.find(
                         x => new Date(x.begin).getTime() === begin.getTime() && new Date(x.end).getTime() === end.getTime());
 
-                    let status = begin < new Date() ? 'available' : 'past'; 
+                    let status = begin > new Date() ? 'available' : 'past'; 
 
                     if (bookedAppointment) {
                         if (status !== 'past') {
