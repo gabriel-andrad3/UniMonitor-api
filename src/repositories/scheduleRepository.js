@@ -99,7 +99,7 @@ async function insertSchedule(schedule) {
     const insertQuery = `insert into schedule 
                             ("weekday", "begin", "end", monitoring_id) 
                         values 
-                            ('${numberToWeekdayName(schedule.weekday)}', '${schedule.begin}', '${schedule.end}', '${schedule.monitoring.id}') 
+                            ('${schedule.weekday}', '${schedule.begin}', '${schedule.end}', '${schedule.monitoring.id}') 
                         returning id`;
     
     let result = await pool.query(insertQuery);
@@ -111,7 +111,7 @@ async function insertSchedule(schedule) {
 
 async function updateSchedule(schedule) {
     const updateQuery = `update schedule set 
-                            "weekday"='${numberToWeekdayName(schedule.weekday)}', 
+                            "weekday"='${schedule.weekday}', 
                             "begin"='${schedule.begin}',
                             "end"='${schedule.end}', 
                             monitoring_id=${schedule.monitoring.id}
