@@ -4,13 +4,13 @@ const { validateWeekday, validateBegin, validateEnd, validateMonitoring, validat
 const scheduleService = require('../services/scheduleService');
 const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
-router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
+router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {        
   try {
     if (req.query.begin && req.query.end) {
       res.send(await scheduleService.getSchedulesByDate(req.query.begin, req.query.end, req.user.id));
     }
     else {
-      res.send(await scheduleService.getSchedules());
+      res.send(await scheduleService.getSchedules(req.query.monitoringId));
     }
   }
   catch (error) {

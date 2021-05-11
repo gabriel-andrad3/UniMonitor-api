@@ -67,6 +67,21 @@ async function getSchedulesByUserId(userId) {
     });
 }
 
+async function getSchedulesByMonitoringId(monitoringId) {
+    let query = `${selectQuery} where s.monitoring_id = ${monitoringId}`;
+    
+    let result = await pool.query(query);
+
+    if (result.rowCount == 0)
+        return [];
+
+    return result.rows.map(row => {
+        let monitoring = new Monitoring(null, null, row.schedule_monitoring_id);
+
+        return new Schedule(row.schedule_weekday.trim(), row.schedule_begin, row.schedule_end, monitoring, row.schedule_id);
+    });
+}
+
 async function getScheduleById(id) {
     let query = `${selectQuery} where s.id = ${id}`;
 
@@ -118,6 +133,7 @@ async function deleteSchedule(schedule) {
 
 module.exports = {
     getSchedules,
+    getSchedulesByMonitoringId,
     getSchedulesByUserId,
     getScheduleById,
     insertSchedule,
