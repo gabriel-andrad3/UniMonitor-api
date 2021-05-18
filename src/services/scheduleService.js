@@ -103,15 +103,16 @@ async function getSchedulesByDate(begin, end, userId) {
                 const availableAppointmentsCount = appointments.filter(x => x.status === 'available').length;
                 const bookedAppointmentsCount = appointments.filter(x => x.status === 'booked').length;
                 const pastAppointmentsCount = appointments.filter(x => x.status === 'past').length;
+                const unavailableAppointmentsCount = appointments.filter(x => x.status === 'unavailable').length;
 
                 let scheduleStatus = '';
 
                 if (isProfessor) {
-                    if (availableAppointmentsCount === 0) {
-                        scheduleStatus = 'available';
+                    if (unavailableAppointmentsCount > 0) {
+                        scheduleStatus = 'withBooking';
                     }
                     else {
-                        scheduleStatus = 'withBooking';
+                        scheduleStatus = 'available';
                     }
     
                     if (pastAppointmentsCount > 0) {
