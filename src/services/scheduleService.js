@@ -42,6 +42,9 @@ async function getSchedulesByDate(begin, end, userId) {
 
     const dateCount = new Date(beginDate);
 
+    const user = await userRepository.getUserById(userId);
+    const isProfessor = user.roles.filter(x => x.name === 'Professor').length > 0;
+
     while (dateCount <= endDate) {
         console.log(dateCount)
 
@@ -74,7 +77,7 @@ async function getSchedulesByDate(begin, end, userId) {
                     const end = new Date(begin);
                     end.setMinutes(end.getMinutes() + 30);
 
-                    const bookedAppointment = bookedAppointments.find(
+                    let bookedAppointment = bookedAppointments.find(
                         x => new Date(x.begin).getTime() === begin.getTime() && new Date(x.end).getTime() === end.getTime());
 
                     let status = begin > new Date() ? 'available' : 'past'; 
@@ -82,6 +85,10 @@ async function getSchedulesByDate(begin, end, userId) {
                     if (bookedAppointment) {
                         if (status !== 'past') {
                             status = bookedAppointment.student.id === userId ? 'booked' : 'unavailable';
+                        }
+
+                        if (status === 'unavailable' && isProfessor) {
+                            bookedAppointment.student = await userRepository.getUserById(bookedAppointment.student.id);
                         }
 
                         appointments.push({...bookedAppointment, status: status, schedule: null });
@@ -99,21 +106,35 @@ async function getSchedulesByDate(begin, end, userId) {
 
                 let scheduleStatus = '';
 
-                if (availableAppointmentsCount > 0) {
-                    scheduleStatus = 'available';
+                if (isProfessor) {
+                    if (availableAppointmentsCount === 0) {
+                        scheduleStatus = 'available';
+                    }
+                    else {
+                        scheduleStatus = 'withBooking';
+                    }
+    
+                    if (pastAppointmentsCount > 0) {
+                        scheduleStatus = 'past';
+                    }
                 }
                 else {
-                    scheduleStatus = 'unavailable';
+                    if (availableAppointmentsCount > 0) {
+                        scheduleStatus = 'available';
+                    }
+                    else {
+                        scheduleStatus = 'unavailable';
+                    }
+    
+                    if (bookedAppointmentsCount > 0) {
+                        scheduleStatus = 'booked';
+                    }
+    
+                    if (pastAppointmentsCount > 0) {
+                        scheduleStatus = 'past';
+                    }
                 }
-
-                if (bookedAppointmentsCount > 0) {
-                    scheduleStatus = 'booked';
-                }
-
-                if (pastAppointmentsCount > 0) {
-                    scheduleStatus = 'past';
-                }
-
+                
                 schedule.appointments = appointments;
 
                 groupedSchedule.schedules.push({...schedule, status: scheduleStatus})
