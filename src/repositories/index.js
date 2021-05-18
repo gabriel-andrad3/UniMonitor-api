@@ -1,4 +1,5 @@
 const appointmentRepository = require('./appointmentRepository');
+const enrollmentRepository = require('./enrollmentRepository');
 const monitoringRepository = require('./monitoringRepository');
 const noticeRepository = require('./noticeRepository');
 const roleRepository = require('./roleRepository');
@@ -8,6 +9,7 @@ const userRepository = require('./userRepository');
 
 module.exports = {
     appointmentRepository,
+    enrollmentRepository,
     monitoringRepository,
     noticeRepository,
     roleRepository, 

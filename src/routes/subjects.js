@@ -48,4 +48,13 @@ router.delete('/:id', handleRoleAuthorization(['Admin']), async function(req, re
   }
 });
 
+router.put('/:id/users', async function(req, res, next) {
+  try {
+    res.send(await subjectService.upsertUsers(req.params.id, req.files.enrollments));
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

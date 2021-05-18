@@ -28,6 +28,29 @@ async function getSubjects() {
 
         let actionsCell = row.insertCell();
         
+        let uploadButton = document.createElement('button');
+        uploadButton.classList.add('icon');
+        uploadButton.classList.add('green');
+        uploadButton.innerHTML  = '<i class="fas fa-file-upload"></i>';
+
+        uploadButton.onclick = () => {
+            document.getElementById(`subject-${subject.id}-file}`).click();
+        }
+
+        actionsCell.appendChild(uploadButton);
+
+        let uploadHiddenInput = document.createElement('input');
+        uploadHiddenInput.id = `subject-${subject.id}-file}`;
+        uploadHiddenInput.type = 'file';
+        uploadHiddenInput.style = 'display:none';
+        uploadHiddenInput.onchange  = () => {
+            console.log('change');
+
+
+        }
+
+        actionsCell.appendChild(uploadHiddenInput);
+
         let editButton = document.createElement('button');
         editButton.classList.add('icon');
         editButton.classList.add('blue');

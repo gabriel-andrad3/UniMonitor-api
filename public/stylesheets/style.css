@@ -148,6 +148,10 @@ label {
   color: #0984e3
 }
 
+.green {
+  color: #2ecc71;
+}
+
 .status {
   display: flex;
   margin-top: 24px;

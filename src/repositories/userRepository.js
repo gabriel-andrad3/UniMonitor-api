@@ -96,6 +96,36 @@ async function insertUser(user, password) {
     }
 }
 
+async function insertUserWithoutPassowrd(user) {
+    try {
+        await pool.query('begin');
+        
+        const userQuery = `insert into "user" 
+                                ("name", register, email) 
+                            values 
+                                ('${user.name}', '${user.register}', '${user.email}') 
+                            returning id`;
+
+        let userResult = await pool.query(userQuery);
+
+        user.id = userResult.rows[0].id;
+
+        console.log(user);
+
+        const userRolesQuery = `insert into user_role (role_id, user_id) values ${user.roles.map(role => `(${role.id}, ${user.id})`).join(', ')}`;
+        await pool.query(userRolesQuery);
+
+        await pool.query('commit');
+
+        return user;
+    }
+    catch (e) {
+        pool.query('rollback');
+
+        throw e;
+    }
+}
+
 async function updateUser(user) {
     try {
         await pool.query('begin');
@@ -115,6 +145,14 @@ async function updateUser(user) {
 
         throw e;
     }
+}
+
+async function updateUserEmail(id, email) {
+    const query = `udate "user" 
+            set email = '${email}' 
+        where id = ${id}`;
+
+    pool.query(query);
 }
 
 function resultToUser(result) {
@@ -151,5 +189,7 @@ module.exports = {
     getUserByEmail,
     getUserAndPasswordByRegister,
     insertUser,
-    updateUser
+    updateUser,
+    insertUserWithoutPassowrd,
+    updateUserEmail,
 }

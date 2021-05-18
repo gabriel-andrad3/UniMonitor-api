@@ -1,7 +1,10 @@
-const { Subject } = require('../models');
-const { subjectRepository, userRepository } = require('../repositories');
+const { Subject, User, Role } = require('../models');
+const { subjectRepository, userRepository, enrollmentRepository, roleRepository } = require('../repositories');
 const { NotFound, Conflict } = require('../utils/errors');
 const monitoringService = require('./monitoringService');
+
+const csv = require('csv-parser');
+const { Readable } = require('stream');
 
 async function getSubjects(userId) {
     let subjects = [];
@@ -82,9 +85,54 @@ async function deleteSubject(id) {
     await subjectRepository.deleteSubject(existentSubject);
 }
 
+function bufferToStream(binary) {
+    const readableInstanceStream = new Readable({
+      read() {
+        this.push(binary);
+        this.push(null);
+      }
+    });
+
+    return readableInstanceStream;
+}
+
+async function upsertUsers(id, usersFile) {
+    const rows = [];
+
+    bufferToStream(usersFile.data)
+        .pipe(csv())
+        .on('data', (row) => {
+            rows.push(row);
+        })
+        .on('end', async () => {
+            const existentRoles = await roleRepository.getRoles();
+            const studentRole = existentRoles.find(x => x.name === 'Student');
+            
+            const users = rows.map(row => new User(row.name, row.register, [studentRole], row.email));
+
+            for (let user of users) {
+                const userFound = await userRepository.getUserByRegister(user.register);
+
+                user.id = userFound?.id;
+
+                if (!userFound) {
+                    const userInserted = await userRepository.insertUserWithoutPassowrd(user);
+
+                    user.id = userInserted.id;
+                }
+                else if (!userFound.email) {
+                    await userRepository.updateUserEmail(user)
+                }
+
+                await enrollmentRepository.insertEnrollment(user, new Subject(null, null, null, id));
+            }
+        });
+}
+
 module.exports = {
     getSubjects,
     createSubject,
     updateSubject,
-    deleteSubject
+    deleteSubject,
+    upsertUsers
 };

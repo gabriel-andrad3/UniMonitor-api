@@ -6,6 +6,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
+var fileUpload = require('express-fileupload');
 
 var routes = require('./routes');
 
@@ -20,6 +21,8 @@ app.use(function(req, res, next) {
 
   next();
 });
+
+app.use(fileUpload());
 
 app.use(logger('dev'));
 app.use(express.json());
