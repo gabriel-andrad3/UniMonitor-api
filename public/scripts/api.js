@@ -79,6 +79,23 @@ const api = {
                 resolveError(error);
             }
         },
+        putUsers: async function (id, usersFile) {
+            try {
+                const formData = new FormData();
+                formData.append('enrollments', usersFile);
+
+                const response = await _client.put(`/subjects/${id}/users`, formData, {
+                    headers: {
+                      'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                return response.data;
+            }
+            catch (error) {
+                resolveError(error);
+            }
+        },
         delete: async function (id) {
             try {
                 await _client.delete(`/subjects/${id}`);

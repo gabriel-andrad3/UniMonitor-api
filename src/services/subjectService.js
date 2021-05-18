@@ -113,7 +113,7 @@ async function upsertUsers(id, usersFile) {
             for (let user of users) {
                 const userFound = await userRepository.getUserByRegister(user.register);
 
-                user.id = userFound?.id;
+                user.id = userFound ? userFound.id : null;
 
                 if (!userFound) {
                     const userInserted = await userRepository.insertUserWithoutPassowrd(user);

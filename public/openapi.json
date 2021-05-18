@@ -177,6 +177,91 @@
           }
         }
       }
+    },
+    "/schedules": {
+      "get": {
+        "tags": [
+          "Schedules"
+        ],
+        "summary": "Find all schedules related to the user",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "begin",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "schedules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            },
+                            "weekday": {
+                              "type": "number"
+                            },
+                            "begin": {
+                              "type": "string",
+                              "format": "time"
+                            },
+                            "end": {
+                              "type": "string",
+                              "format": "time"
+                            },
+                            "status": {
+                              "type": "string"
+                            },
+                            "monitoring": {
+                              "$ref": "#/components/schemas/Monitoring"
+                            },
+                            "appointments": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/Appointment"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized operation",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "security": [
@@ -275,6 +360,44 @@
             "items": {
               "$ref": "#/components/schemas/Role"
             }
+          }
+        }
+      },
+      "Monitoring": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "subject": {
+            "$ref": "#/components/schemas/Role"
+          },
+          "monitor": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "Appointment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "begin": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "student": {
+            "$ref": "#/components/schemas/User"
+          },
+          "status": {
+            "type": "string"
           }
         }
       }

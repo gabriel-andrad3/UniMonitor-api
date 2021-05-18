@@ -42,11 +42,22 @@ async function getSubjects() {
         let uploadHiddenInput = document.createElement('input');
         uploadHiddenInput.id = `subject-${subject.id}-file}`;
         uploadHiddenInput.type = 'file';
+        uploadHiddenInput.accept = 'csv';
         uploadHiddenInput.style = 'display:none';
-        uploadHiddenInput.onchange  = () => {
-            console.log('change');
+        uploadHiddenInput.onchange = async () => {
+            const file = document.getElementById(`subject-${subject.id}-file}`).files[0];
 
+            try {
+                await api.subjects.putUsers(subject.id, file);
 
+                setSuccess('Alunos matriculados com sucesso!');
+            }
+            catch (error) {
+                setError(error);
+            }
+            finally {
+                await getSubjects();
+            }
         }
 
         actionsCell.appendChild(uploadHiddenInput);
