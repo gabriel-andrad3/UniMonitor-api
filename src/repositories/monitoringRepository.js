@@ -50,6 +50,25 @@ async function getMonitoringBySubjectId(subjectId) {
     return new Monitoring(subject, monitor, result.rows[0].monitoring_id); 
 }
 
+async function getMonitoringsByUserId(userId) {
+    let query = `${selectQuery} 
+        inner join "enrollment" e on e.subject_id = m.subject_id
+        inner join "subject" s on s.id = m.subject_id
+        where (e.student_id = ${userId} or s.professor_id = ${userId})`;
+    
+    let result = await pool.query(query);
+
+    if (result.rowCount == 0)
+        return null;
+
+    return result.rows.map(row => {
+        let subject = new Subject(null, null, null, row.subject_id);
+        let monitor = new User (null, null, null, null, row.monitor_id);        
+
+        return new Monitoring(subject, monitor, row.monitoring_id);
+    });  
+}
+
 async function getMonitoringsByMonitorId(monitorId) {
     let query = `${selectQuery} where m.monitor_id = ${monitorId}`;
     
@@ -104,6 +123,7 @@ module.exports = {
     getMonitoringById,
     getMonitoringBySubjectId,
     getMonitoringsByMonitorId,
+    getMonitoringsByUserId,
     insertMonitoring,
     updateMonitoring,
     deleteMonitoring
