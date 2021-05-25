@@ -52,7 +52,7 @@ async function getSchedulesByDate(begin, end, userId) {
 
         if (schedulesWeekday.length > 0) {
             const date = new Date(dateCount);
-            date.setHours(0, 0, 0 ,0);
+            date.setHours(12, 0, 0 ,0);
 
             const groupedSchedule =  {
                 date: date,
