@@ -25,7 +25,7 @@ async function getNotices(userId) {
         }
         else {
             let date = new Date(notice.date.getTime());
-            date.setHours(0, 0, 0, 0);
+            date.setHours(12, 0, 0, 0);
 
             acc.push(new NoticeBoardWeekday(notice.date.getDay(), date, [notice]));
         }
