@@ -54,7 +54,8 @@ async function getMonitoringsByUserId(userId) {
     let query = `${selectQuery} 
         inner join "enrollment" e on e.subject_id = m.subject_id
         inner join "subject" s on s.id = m.subject_id
-        where (e.student_id = ${userId} or s.professor_id = ${userId})`;
+        where (e.student_id = ${userId} or s.professor_id = ${userId})
+        group by m.id`;
     
     let result = await pool.query(query);
 
