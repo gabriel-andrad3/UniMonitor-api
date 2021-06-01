@@ -51,7 +51,7 @@ async function getAppointmentById(id) {
         return null;
 
     let student = new User(null, null, null, null, result.rows[0].appointment_student_id);
-    let schedule = new Schedule(null, null, null, result.rows[0].appointment_schedule_id);
+    let schedule = new Schedule(null, null, null, null, result.rows[0].appointment_schedule_id);
 
     return new Appointment(result.rows[0].appointment_begin, result.rows[0].appointment_end, student, schedule, result.rows[0].appointment_id);
 }

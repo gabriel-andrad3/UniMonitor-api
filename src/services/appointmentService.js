@@ -1,6 +1,7 @@
 const Appointment = require('../models/Appointment');
 const { userRepository, subjectRepository, monitoringRepository, 
         appointmentRepository, scheduleRepository } = require('../repositories');
+const noticeService = require('../services/noticeService');
 
 async function getAppointments() {
     let appointments = await appointmentRepository.getAppointments();
@@ -160,11 +161,37 @@ async function updateAppointment(begin, end, student, schedule, id) {
     return await appointmentRepository.updateAppointment(new Appointment(begin, end, existentStudent, existentSchedule, id));
 }
 
-async function deleteAppointment(id) {
+const dateToString = (date) => {
+    const newDate = new Date(date);
+
+    return `${newDate.getDate()}/${newDate.getMonth()}`;
+}
+
+const timeToString = (date) => {
+    const newDate = new Date(date);
+
+    return `${('0' + newDate.getHours()).slice(-2)}:${('0' + newDate.getMinutes()).slice(-2)}`;
+}
+
+async function deleteAppointment(id, userId) {
     let existentAppointment = await appointmentRepository.getAppointmentById(id);
     
     if (!existentAppointment) {
         throw new NotFound(`agendamento com id ${id} não existe`);
+    }
+
+    if (existentAppointment.student.id !== userId) {
+        const schedule = await scheduleRepository.getScheduleById(existentAppointment.schedule.id);
+        const monitoring = await monitoringRepository.getMonitoringById(schedule.monitoring.id)
+
+        console.log(existentAppointment)
+        console.log();
+
+        await noticeService.createNotice(
+            `Monitoria cancelada (${dateToString(existentAppointment.begin)} ${timeToString(existentAppointment.begin)} - ${timeToString(existentAppointment.end)})`,
+            `A monitoria do dia ${dateToString(existentAppointment.begin)} das ${timeToString(existentAppointment.begin)} ás ${timeToString(existentAppointment.end)} foi cancelada`, 
+            monitoring.subject.id, 
+            userId);
     }
     
     await appointmentRepository.deleteAppointment(id);

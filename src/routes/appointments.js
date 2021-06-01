@@ -44,7 +44,7 @@ router.put('/:id', handleRoleAuthorization(['Student']), async function(req, res
 
 router.delete('/:id', handleRoleAuthorization(['Student', 'Monitor']), async function(req, res, next) {
     try {
-        res.send(await appointmentService.deleteAppointment(req.params.id));
+        res.send(await appointmentService.deleteAppointment(req.params.id, req.user.id));
     }
     catch (error) {
         next(error);
