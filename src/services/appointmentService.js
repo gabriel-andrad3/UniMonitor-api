@@ -20,6 +20,101 @@ async function getAppointments() {
     return appointments;
 }
 
+async function getAppointmentsByDate(begin, end, userId) {
+    const beginDate = new Date(begin);
+    const endDate = new Date(end);
+
+    let schedules = await scheduleRepository.getSchedulesByUserId(userId);
+    schedules = schedules.filter(x => x.monitoring.monitor.id === userId);
+
+    for (let schedule of schedules) {
+        if (schedule.monitoring.id) {
+            schedule.monitoring = await monitoringRepository.getMonitoringById(schedule.monitoring.id);
+            schedule.monitoring.subject = await subjectRepository.getSubjectById(schedule.monitoring.subject.id);
+            schedule.monitoring.monitor = await userRepository.getUserById(schedule.monitoring.monitor.id);
+        }
+    }
+
+    const groupedSchedules = [];
+
+    const dateCount = new Date(beginDate);
+
+    while (dateCount <= endDate) {
+        console.log(dateCount)
+
+        const schedulesWeekday = schedules.filter(schedule => schedule.weekday === dateCount.getDay());
+
+        if (schedulesWeekday.length > 0) {
+            const date = new Date(dateCount);
+            date.setHours(12, 0, 0 ,0);
+
+            const groupedSchedule =  {
+                date: date,
+                schedules: []
+            }
+
+            for (const schedule of schedulesWeekday) {
+                const timeCount = new Date(dateCount);
+                const beginParts = schedule.begin.split(':');
+                timeCount.setHours(beginParts[0], beginParts[1], 0, 0);
+
+                const scheduleEnd = new Date(dateCount);
+                const endParts = schedule.end.split(':');
+                scheduleEnd.setHours(endParts[0], endParts[1], 0, 0);
+
+                const appointments = [];
+
+                const bookedAppointments = await appointmentRepository.getAppointmentsByScheduleId(schedule.id);
+
+                while (timeCount < scheduleEnd) {
+                    const begin = new Date(timeCount);
+                    const end = new Date(begin);
+                    end.setMinutes(end.getMinutes() + 30);
+
+                    let bookedAppointment = bookedAppointments.find(
+                        x => new Date(x.begin).getTime() === begin.getTime() && new Date(x.end).getTime() === end.getTime()); 
+
+                    if (bookedAppointment) {
+                        let status = begin > new Date() ? 'booked' : 'past';
+                        
+                        bookedAppointment.student = await userRepository.getUserById(bookedAppointment.student.id);
+
+                        appointments.push({...bookedAppointment, status: status, schedule: null });
+                    }
+
+                    timeCount.setMinutes(timeCount.getMinutes() + 30, 0, 0);
+                }
+
+                const bookedAppointmentsCount = appointments.filter(x => x.status === 'booked').length;
+                const pastAppointmentsCount = appointments.filter(x => x.status === 'past').length;
+
+                let scheduleStatus = '';
+    
+                if (bookedAppointmentsCount > 0) {
+                    scheduleStatus = 'booked';
+                }
+
+                if (pastAppointmentsCount > 0) {
+                    scheduleStatus = 'past';
+                }
+                
+                if (scheduleStatus !== '') {
+                    schedule.appointments = appointments;
+
+                    groupedSchedule.schedules.push({...schedule, status: scheduleStatus})
+                }
+            }
+
+            groupedSchedules.push(groupedSchedule);
+        }
+
+        dateCount.setDate(dateCount.getDate() + 1);
+    }
+
+    return groupedSchedules;
+}
+
+
 async function insertAppointment(begin, end, student, schedule) {
     let existentStudent = await userRepository.getUserById(student.id);     
 

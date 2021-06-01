@@ -6,7 +6,12 @@ const handleRoleAuthorization = require('../middlewares/handleAuthorization');
 
 router.get('/', handleRoleAuthorization(['Student', 'Monitor', 'Professor', 'Admin']), async function(req, res, next) {
     try {
-        res.send(await appointmentService.getAppointments());
+        if (req.query.begin && req.query.end) {
+            res.send(await appointmentService.getAppointmentsByDate(req.query.begin, req.query.end, req.user.id));
+        }
+        else {
+            res.send(await appointmentService.getAppointments());
+        }
     }
     catch (error) {
         next(error);
@@ -37,7 +42,7 @@ router.put('/:id', handleRoleAuthorization(['Student']), async function(req, res
     }
 });
 
-router.delete('/:id', handleRoleAuthorization(['Student']), async function(req, res, next) {
+router.delete('/:id', handleRoleAuthorization(['Student', 'Monitor']), async function(req, res, next) {
     try {
         res.send(await appointmentService.deleteAppointment(req.params.id));
     }
