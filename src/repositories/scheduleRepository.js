@@ -67,6 +67,28 @@ async function getSchedulesByUserId(userId) {
     });
 }
 
+async function getSchedulesByMonitorId(userId) {
+    const query = selectQuery + `
+            inner join "monitoring" m on s.monitoring_id = m.id
+            inner join "subject" su on su.id = m.subject_id
+            inner join "enrollment" e on e.subject_id =  m.subject_id
+        where
+            m.monitor_id = ${userId}
+        group by schedule_id
+    `
+    
+    let result = await pool.query(query);
+
+    if (result.rowCount == 0)
+        return [];
+
+    return result.rows.map(row => {
+        let monitoring = new Monitoring(null, { id: userId }, row.schedule_monitoring_id);
+
+        return new Schedule(weekdayNameToNumber(row.schedule_weekday.trim()), row.schedule_begin, row.schedule_end, monitoring, row.schedule_id);
+    });
+}
+
 async function getSchedulesByMonitoringId(monitoringId) {
     let query = `${selectQuery} where s.monitoring_id = ${monitoringId}`;
     
@@ -135,6 +157,7 @@ module.exports = {
     getSchedules,
     getSchedulesByMonitoringId,
     getSchedulesByUserId,
+    getSchedulesByMonitorId,
     getScheduleById,
     insertSchedule,
     updateSchedule,

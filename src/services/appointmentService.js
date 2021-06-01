@@ -24,7 +24,8 @@ async function getAppointmentsByDate(begin, end, userId) {
     const beginDate = new Date(begin);
     const endDate = new Date(end);
 
-    let schedules = await scheduleRepository.getSchedulesByUserId(userId);
+    let schedules = await scheduleRepository.getSchedulesByMonitorId(userId);
+
     schedules = schedules.filter(x => x.monitoring.monitor.id === userId);
 
     for (let schedule of schedules) {
@@ -40,8 +41,6 @@ async function getAppointmentsByDate(begin, end, userId) {
     const dateCount = new Date(beginDate);
 
     while (dateCount <= endDate) {
-        console.log(dateCount)
-
         const schedulesWeekday = schedules.filter(schedule => schedule.weekday === dateCount.getDay());
 
         if (schedulesWeekday.length > 0) {
@@ -105,7 +104,9 @@ async function getAppointmentsByDate(begin, end, userId) {
                 }
             }
 
-            groupedSchedules.push(groupedSchedule);
+            if (groupedSchedule.schedules.length > 0) {
+                groupedSchedules.push(groupedSchedule);
+            }
         }
 
         dateCount.setDate(dateCount.getDate() + 1);
@@ -171,6 +172,7 @@ async function deleteAppointment(id) {
 
 module.exports = {
     getAppointments,
+    getAppointmentsByDate,
     insertAppointment,
     updateAppointment,
     deleteAppointment
